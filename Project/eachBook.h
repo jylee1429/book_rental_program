@@ -1,5 +1,6 @@
+#ifndef _EACHBOOK_H_
+#define _EACHBOOK_H_
 #include "book.h"
-
 
 class EachBook : public Book {
 protected:
@@ -14,6 +15,7 @@ public:
 	int getISBN();
 	bool available();
 
-	void borrow(int ISBN);
-
+	void borrow(int ISBN); //책 대출
+	void return_book(); //책 반납
 };
+#endif
