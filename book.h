@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _BOOK_H_
+#define _BOOK_H_
 #include <iostream>
 #include <string>
 #include <map>
@@ -26,3 +27,4 @@ public:
 	void searchBook(int isbn); //책 정보 검색
 	void returnBook(int isbn); //책 반납
 };
+#endif
