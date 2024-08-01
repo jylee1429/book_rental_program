@@ -1,3 +1,5 @@
+#ifndef _EACHBOOK_H_
+#define _EACHBOOK_H_
 #include "book.h"
 
 class EachBook :public Book {
@@ -16,3 +18,4 @@ public:
 	void borrow(int ISBN);
 
 };
+#endif
