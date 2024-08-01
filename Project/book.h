@@ -1,12 +1,12 @@
-#pragma once
+#ifndef _BOOK_H_
+#define _BOOK_H_
 #include <iostream>
 #include <string>
-#include <map>
 #include <vector>
 #include "eachBook.h"
 using namespace std;
 
-vector<Book> book_list;
+//vector<Book> book_list;
 
 class Book {
 protected:
@@ -18,11 +18,14 @@ public:
 	Book();
 	//Book(int isbn, string title, string author, string publisher);
 
-	string getTitle();
-	string getAuthor();
-	string getPublisher();
+	string getTitle() const;
+	string getAuthor() const;
+	string getPublisher() const;
 
-	void addBook(int isbn, string title, string author, string publisher); //책 등록
-	void searchBook(int isbn); //책 정보 검색
+	void addBook(int isbn, const string& title, const string& author, const string& publisher); //책 등록
+	void searchBook() const; //책 정보 출력
+	void borrowBook(); //책 대출
 	void returnBook(int isbn); //책 반납
 };
+
+#endif

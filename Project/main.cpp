@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include <iostream>
+#include "book.h"
+#include "eachBook.h"
 #include "member.h"
 
 using namespace std;

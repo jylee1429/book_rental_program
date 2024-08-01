@@ -2,15 +2,11 @@
 using namespace std;
 #include "eachBook.h"
 
-
-EachBook::EachBook() {
-	this->ISBN = 0;
-	this->borrow_status = true;
-}
+EachBook::EachBook() :EachBook(0) {}
 EachBook::EachBook(int ISBN)
 {
 	this->ISBN = ISBN;
-	this->borrow_status = true;
+	this->borrow_status = false;
 }
 
 void EachBook::setISBN(int isbn)
@@ -23,11 +19,15 @@ int EachBook::getISBN()
 }
 bool EachBook::available()
 {
-	return borrow;
+	return this->borrow_status;
 }
 
 void EachBook::borrow(int ISBN)
 {
-	this->borrow_status = false;
+	this->borrow_status = true;
 	cout << "대출 완료\n";
+}
+
+void EachBook::return_book() {
+	this->borrow_status = false;
 }

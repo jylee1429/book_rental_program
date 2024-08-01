@@ -130,7 +130,9 @@
     <ClCompile Include="book.cpp" />
     <ClCompile Include="eachBook.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="member.cpp" />
+    <ClCompile Include="member.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="book.h" />
