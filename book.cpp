@@ -25,14 +25,15 @@ int Book::getBookISBN() const
 	if (each.size() == 0)
 		return -1;				// 재고 없음
 
-	return each[each.size()-1].getISBN();	// ISBN 출력
+	return each[each.size() - 1].getISBN();	// ISBN 출력
 }
 
 void Book::addBook(int isbn, const string& title, const string& author, const string& publisher) { //책 등록
 	this->title = title;
 	this->author = author;
 	this->publisher = publisher;
-	this->each.push_back(isbn);
+	this->each.push_back(EachBook(isbn));
+	cout << "each size = " << each.size() << endl;
 }
 
 void Book::searchBook() const //책 검색
@@ -42,18 +43,18 @@ void Book::searchBook() const //책 검색
 	cout << "출판사 : " << this->getPublisher() << endl;
 }
 
-EachBook Book::borrowBook() //책 대출
+EachBook Book::borrowBook(int isbn, string& t) //책 대출
 {
-	vector<EachBook>::iterator it;
-	for (it = this->each.begin(); it != this->each.end(); it++)
-		if ((*it).available())
-			break;
-
-	int i = (*it).getISBN();
-	cout << "ISBN : " << i << " 책을 대출합니다.\n";
 	try {
-		(*it).borrow(i);
-		return *it;
+		cout << "ISBN: " << isbn << " 책을 대출합니다.\n";
+
+		for (auto& it : this->each)
+			if (it.getISBN() == isbn)
+			{
+				it.setTitle(t);
+				it.borrow(isbn);
+				return it;
+			}
 	}
 	catch (exception& e) {
 		cout << "대출 불가\n";
@@ -62,11 +63,12 @@ EachBook Book::borrowBook() //책 대출
 
 void Book::returnBook(int isbn) //책 반납
 {
-	vector<EachBook>::iterator it;
-	for (it = this->each.begin(); it != each.end(); it++)
-		if ((*it).getISBN() == isbn)
-			break;
-	(*it).return_book();
+	for (auto& it : this->each)
+		if (it.getISBN() == isbn)
+		{
+			it.return_book();
+		}
+
 	cout << "반납 완료\n";
 }
 
@@ -84,11 +86,11 @@ void EachBook::setISBN(int isbn)
 }
 int EachBook::getISBN() const
 {
-	return this->ISBN;
+	return ISBN;
 }
 bool EachBook::available()
 {
-	return this->borrow_status;
+	return borrow_status;
 }
 
 void EachBook::borrow(int ISBN)
@@ -98,4 +100,14 @@ void EachBook::borrow(int ISBN)
 
 void EachBook::return_book() {
 	this->borrow_status = false;
+}
+
+string EachBook::getTitle() const
+{
+	return this->title;
+
+}
+
+void EachBook::setTitle(string t) {
+	this->title = t;
 }

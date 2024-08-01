@@ -19,16 +19,15 @@ public:
 	Book();
 	//Book(int isbn, string title, string author, string publisher);
 
-	string getTitle() const;
+	virtual string getTitle() const;
 	string getAuthor() const;
 	string getPublisher() const;
 	int getBookISBN() const;
 
 	void addBook(int isbn, const string& title, const string& author, const string& publisher); //책 등록
 	void searchBook() const; //책 정보 출력
-	EachBook borrowBook(); //책 대출
+	EachBook borrowBook(int isbn, string& t); //책 대출
 	void returnBook(int isbn); //책 반납
-
 };
 
 
@@ -36,7 +35,7 @@ class EachBook : public Book {
 protected:
 	int ISBN;
 	bool borrow_status; //대출 여부
-
+	string title;
 public:
 	EachBook();
 	EachBook(int ISBN);
@@ -47,5 +46,8 @@ public:
 
 	void borrow(int ISBN); //책 대출
 	void return_book(); //책 반납
+
+	string getTitle() const;
+	void setTitle(string t);
 };
 #endif
