@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="book.cpp" />
-    <ClCompile Include="eachBook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="member.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -136,8 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="book.h" />
-    <ClInclude Include="eachBook.h" />
     <ClInclude Include="member.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

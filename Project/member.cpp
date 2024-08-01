@@ -6,7 +6,6 @@ using namespace std;
 
 #include "member.h"
 #include "book.h"
-#include "eachBook.h"
 
 /*				MemberList함수				*/
 
@@ -112,7 +111,7 @@ void Member::returnBooks(int isbn) {
 
 // 책 대여
 void Member::borrowBooks(string title) {
-	
+
 }
 
 void Member::showOverdue(void) const {

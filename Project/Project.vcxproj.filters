@@ -24,9 +24,6 @@
     <ClCompile Include="book.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="eachBook.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="member.h">
@@ -35,8 +32,8 @@
     <ClInclude Include="book.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="eachBook.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
   </ItemGroup>
 </Project>
