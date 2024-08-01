@@ -10,10 +10,10 @@ class EachBook;
 
 class Book {
 protected:
-	string title; //Á¦¸ñ
-	string author; //ÀúÀÚ
-	string publisher; //ÃâÆÇ»ç
-	vector<EachBook> each; //°¢°¢ÀÇ Ã¥ ÀúÀå
+	string title; //ì œëª©
+	string author; //ì €ì
+	string publisher; //ì¶œíŒì‚¬
+	vector<EachBook> each; //ê°ê°ì˜ ì±… ì €ì¥
 public:
 	Book();
 	//Book(int isbn, string title, string author, string publisher);
@@ -22,16 +22,16 @@ public:
 	string getAuthor() const;
 	string getPublisher() const;
 
-	void addBook(int isbn, const string& title, const string& author, const string& publisher); //Ã¥ µî·Ï
-	void searchBook() const; //Ã¥ Á¤º¸ Ãâ·Â
-	void borrowBook(); //Ã¥ ´ëÃâ
-	void returnBook(int isbn); //Ã¥ ¹İ³³
+	void addBook(int isbn, const string& title, const string& author, const string& publisher); //ì±… ë“±ë¡
+	void searchBook() const; //ì±… ì •ë³´ ì¶œë ¥
+	EachBook borrowBook(); //ì±… ëŒ€ì¶œ
+	void returnBook(int isbn); //ì±… ë°˜ë‚©
 };
 
 class EachBook :public Book {
 protected:
 	int ISBN;
-	bool borrow_status; //´ëÃâ ¿©ºÎ
+	bool borrow_status; //ëŒ€ì¶œ ì—¬ë¶€
 
 public:
 	EachBook();
@@ -41,8 +41,8 @@ public:
 	int getISBN();
 	bool available();
 
-	void borrow(int ISBN); //Ã¥ ´ëÃâ
-	void return_book(int ISBN); //Ã¥ ¹İ³³
+	void borrow(int ISBN); //ì±… ëŒ€ì¶œ
+	void return_book(int ISBN); //ì±… ë°˜ë‚©
 };
 
 #endif
