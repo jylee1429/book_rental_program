@@ -18,28 +18,28 @@ string Book::getPublisher() const
 	return this->publisher;
 }
 
-void Book::addBook(int isbn, const string& title, const string& author, const string& publisher) { //Ã¥ µî·Ï
+void Book::addBook(int isbn, const string& title, const string& author, const string& publisher) { //Ã¥ ï¿½ï¿½ï¿½
 	this->title = title;
 	this->author = author;
 	this->publisher = publisher;
 	this->each.push_back(EachBook(isbn));
 }
 
-void Book::searchBook() const //Ã¥ °Ë»ö
+void Book::searchBook() const //ì±… ê²€ìƒ‰
 {
-	cout << "Ã¥ Á¦¸ñ : " << this->getTitle() << endl;
-	cout << "Ã¥ ÀúÀÚ : " << this->getAuthor() << endl;
-	cout << "ÃâÆÇ»ç : " << this->getPublisher() << endl;
+	cout << "ì±… ì œëª© : " << this->getTitle() << endl;
+	cout << "ì±… ì €ìž : " << this->getAuthor() << endl;
+	cout << "ì¶œíŒì‚¬ : " << this->getPublisher() << endl;
 
 	int cnt = 0;
 	for (auto it : this->each)
 		if (it.available())
 			cnt++;
-	cout << "´ëÃâ °¡´É ±Ç ¼ö : " << cnt << endl;
-	cout << "ÀüÃ¼ ±Ç ¼ö : " << this->each.size() << endl;
+	cout << "ëŒ€ì¶œ ê°€ëŠ¥ ê¶Œ ìˆ˜ : " << cnt << endl;
+	cout << "ì „ì²´ ê¶Œ ìˆ˜ : " << this->each.size() << endl;
 }
 
-void Book::borrowBook() //Ã¥ ´ëÃâ
+EachBook Book::borrowBook() //ì±… ëŒ€ì¶œ
 {
 	vector<EachBook>::iterator it;
 
@@ -47,7 +47,7 @@ void Book::borrowBook() //Ã¥ ´ëÃâ
 		if ((*it).available())
 			break;
 
-	cout << (*it).getTitle() << " À»(¸¦) ´ëÃâÇÕ´Ï´Ù.\n";
+	cout << (*it).getTitle() << "  ì„(ë¥¼) ëŒ€ì¶œí•©ë‹ˆë‹¤.\n";
 	int i = (*it).getISBN();
 	cout << "ISBN : " << i << endl;
 
@@ -55,18 +55,18 @@ void Book::borrowBook() //Ã¥ ´ëÃâ
 		(*it).borrow(i);
 	}
 	catch (exception& e) {
-		cout << "´ëÃâÀÌ ºÒ°¡ÇÕ´Ï´Ù.\n";
+		cout << "ëŒ€ì¶œì´ ë¶ˆê°€í•©ë‹ˆë‹¤.\n";
 	}
 }
 
-void Book::returnBook(int isbn) //Ã¥ ¹Ý³³
+void Book::returnBook(int isbn) //ì±… ë°˜ë‚©
 {
 	vector<EachBook>::iterator it;
 	for (it = this->each.begin(); it != each.end(); it++)
 		if ((*it).getISBN() == isbn)
 			break;
 	(*it).return_book(isbn);
-	cout << "¹Ý³³ ¿Ï·á\n";
+	cout << "ë°˜ë‚© ì™„ë£Œ\n";
 }
 
 /* EachBook */
@@ -86,35 +86,34 @@ int EachBook::getISBN()
 	return this->ISBN;
 }
 
-bool EachBook::available() //´ëÃâ °¡´É ¿©ºÎ
+bool EachBook::available() //ëŒ€ì¶œ ê°€ëŠ¥ ì—¬ë¶€
 {
 	return this->borrow_status;
 }
 
-void EachBook::borrow(int ISBN) //isbn ÇØ´ç Ã¥ ´ëÃâ Ã³¸®
-{
-	try {
-		if (this->borrow_status)
-			throw 1;
-		else
-			this->borrow_status = true;
-		cout << "´ëÃâ ¿Ï·á\n";
-	}
-	catch (int e) {
-		cout << "ÀÌ¹Ì ´ëÃâµÈ Ã¥ÀÔ´Ï´Ù.\n";
-	}
+void EachBook::borrow(int ISBN) //isbn í•´ë‹¹ ì±… ëŒ€ì¶œ ì²˜ë¦¬
+try {
+	if (this->borrow_status)
+		throw 1;
+	else
+		this->borrow_status = true;
+	cout << "ëŒ€ì¶œ ì™„ë£Œ\n";
+}
+catch (int e) {
+	cout << "ì´ë¯¸ ëŒ€ì¶œëœ ì±…ìž…ë‹ˆë‹¤.\n";
+}
 }
 
-void EachBook::return_book(int ISBN)  //Ã¥ ¹Ý³³ Ã³¸®
+void EachBook::return_book(int ISBN)  //ì±… ë°˜ë‚© ì²˜ë¦¬
 {
 	try {
 		if (this->borrow_status == false)
 			throw 1;
 		else
 			this->borrow_status = false;
-		cout << "¹Ý³³ ¿Ï·á\n";
+		cout << "ë°˜ë‚© ì™„ë£Œ\n";
 	}
 	catch (int e) {
-		cout << "ÀÌ¹Ì ¹Ý³³µÈ Ã¥ÀÔ´Ï´Ù.\n";
+		cout << "ì´ë¯¸ ë°˜ë‚©ëœ ì±…ìž…ë‹ˆë‹¤.\n";
 	}
 }
