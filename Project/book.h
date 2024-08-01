@@ -3,10 +3,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "eachBook.h"
 using namespace std;
 
 //vector<Book> book_list;
+class EachBook;
 
 class Book {
 protected:
@@ -26,6 +26,23 @@ public:
 	void searchBook() const; //책 정보 출력
 	void borrowBook(); //책 대출
 	void returnBook(int isbn); //책 반납
+};
+
+class EachBook :public Book {
+protected:
+	int ISBN;
+	bool borrow_status; //대출 여부
+
+public:
+	EachBook();
+	EachBook(int ISBN);
+
+	void setISBN(int isbn);
+	int getISBN();
+	bool available();
+
+	void borrow(int ISBN); //책 대출
+	void return_book(int ISBN); //책 반납
 };
 
 #endif
