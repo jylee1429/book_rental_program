@@ -1,0 +1,4 @@
+﻿  book.cpp
+C:\Users\qldkr\Source\Repos\test\book.cpp(65,20): warning C4101: 'e' :참조되지 않은 지역 변수입니다.
+C:\Users\qldkr\Source\Repos\test\book.cpp(68): warning C4715: 'Book::borrowBook': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  Project.vcxproj -> C:\Users\qldkr\Source\Repos\test\Debug\Project.exe
