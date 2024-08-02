@@ -95,16 +95,20 @@ int EachBook::getISBN() const
 }
 bool EachBook::available()
 {
+	cout << "현상태 borrow_status = " << borrow_status << endl;
 	return !borrow_status;
 }
 
 void EachBook::borrow(int ISBN)
 {
 	this->borrow_status = true;
+	cout << "대출 후 borrow_status = " << borrow_status << endl;
+
 }
 
 void EachBook::return_book() {
 	this->borrow_status = false;
+	cout << "반납 후 borrow_status = " << borrow_status << endl;
 }
 
 

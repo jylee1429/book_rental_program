@@ -37,9 +37,11 @@ public:
 class EachBook : public Book {
 protected:
 	int ISBN;
-	bool borrow_status; //대출 여부
 	string title;
+	bool borrow_status; //대출 여부
+
 public:
+
 	EachBook();
 	EachBook(int ISBN);
 
