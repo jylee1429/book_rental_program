@@ -1,7 +1,7 @@
 ﻿#include "book.h"
 
 Book::Book() {
-	this->title = "";
+	this->title = "-";
 	this->author = "";
 	this->publisher = "";
 }
@@ -42,25 +42,24 @@ void Book::searchBook() const //책 검색
 	cout << "출판사 : " << this->getPublisher() << endl;
 }
 
-Book Book::borrowBook(int isbn, string& t) //책 대출
+Book Book::borrowBook(int isbn, const string& t) //책 대출
 {
 	try {
-		cout << "ISBN: " << isbn << " 책을 대출합니다.\n";
-
 		for (auto& it : this->each)
 		{
-			//auto eachBook = dynamic_cast<Book>(it);
 			if (it.getISBN() == isbn)
 			{
-				it.setTitle(t);
-				cout << "책 제목 : " << this->getTitle() << endl;
-				cout << "저자 : " << this->getAuthor() << endl;
-				cout << "출판사 : " << this->getPublisher() << endl;
+				if (it.available())
+				{
+					cout << "ISBN: " << isbn << " 책을 대출합니다.\n";
 
-				it.borrow(isbn);
-				return *this;
+					it.borrow(isbn);
+					return *this;
+				}
 			}
 		}
+		Book b;
+		return b;
 	}
 	catch (exception& e) {
 		cout << "대출 불가\n";
@@ -75,7 +74,7 @@ void Book::returnBook(int isbn) //책 반납
 			it.return_book();
 		}
 
-	cout << "반납 완료\n";
+	cout << "반납을 완료하였습니다.\n";
 }
 
 
@@ -96,7 +95,7 @@ int EachBook::getISBN() const
 }
 bool EachBook::available()
 {
-	return borrow_status;
+	return !borrow_status;
 }
 
 void EachBook::borrow(int ISBN)
@@ -107,6 +106,7 @@ void EachBook::borrow(int ISBN)
 void EachBook::return_book() {
 	this->borrow_status = false;
 }
+
 
 string EachBook::getTitle() const
 {

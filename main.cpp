@@ -35,7 +35,7 @@ int main(void)
 
 		Book tmp;
 		string title, author, publisher;
-		int isbn, id;
+		int isbn, id, idx;
 
 		cin.ignore();
 		cout << endl;
@@ -54,7 +54,6 @@ int main(void)
 			tmp.addBook(isbn, title, author, publisher);
 			book_list.push_back(tmp);
 			cout << endl;
-			cout << "책 등록 완료\n";
 			storeBook(book_list);
 
 			break;
@@ -85,8 +84,13 @@ int main(void)
 			break;
 		case 6:// 등록 도서 목록
 			cout << "======= 등록 도서 목록 =======\n";
+			idx = 0;
 			for (auto& it : book_list)
+			{
+				cout << "[" << idx++ << "]\n";
 				it.searchBook();
+				cout << endl;
+			}
 			break;
 		default:
 			cout << "잘못된 선택입니다.\n";
@@ -140,7 +144,7 @@ int navigateMenu(int x, int y, int options)
 			gotoxy(x, y + i);
 			cout << ((i == 0) ? "1. 책 등록       " :
 				(i == 1) ? "2. 회원 등록     " :
-				(i == 2) ? "3. 도서 대출     " :
+				(i == 2) ? "3. 대출     " :
 				(i == 3) ? "4. 반납          " :
 				(i == 4) ? "5. 도서 대출 현황" :
 				(i == 5) ? "6. 등록 도서 목록" :

@@ -127,16 +127,29 @@ void Member::returnBooks(int isbn) {
 	}
 }
 
+string trim(const string& str) {
+	size_t first = str.find_first_not_of(' ');
+	if (first == string::npos) {
+		return ""; // 모든 문자가 공백인 경우 빈 문자열 반환
+	}
+	size_t last = str.find_last_not_of(' ');
+	return str.substr(first, last - first + 1);
+}
+
+
 // 책 대여
-void Member::borrowBooks(string& title) {
+void Member::borrowBooks(const string& title) {
 	for (auto it = book_list.begin(); it != book_list.end(); it++) {
 		if (title == it->getTitle()) {
 			auto tmp = it->borrowBook(it->getBookISBN(), title);
-			cout << "tmp.getTitle() = " << tmp.getTitle() << endl;
-			borrowedbooks.insert({ it->getBookISBN(),tmp });
-			break;  // 한 권만 빌리면 반복을 종료
+			if (tmp.getTitle() != "-")
+			{
+				borrowedbooks.insert({ it->getBookISBN(),tmp });
+				return;  // 한 권만 빌리면 반복을 종료
+			}
 		}
 	}
+	cout << "대출 가능한 책이 없습니다.\n";
 }
 
 void Member::showOverdue(void) const {
