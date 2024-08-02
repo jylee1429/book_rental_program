@@ -29,7 +29,7 @@ public:
 
 	void addBook(int isbn, const string& title, const string& author, const string& publisher); //책 등록
 	void searchBook() const; //책 정보 출력
-	Book borrowBook(int isbn, string& t); //책 대출
+	Book borrowBook(int isbn, const string& t); //책 대출
 	void returnBook(int isbn); //책 반납
 };
 

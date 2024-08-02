@@ -37,7 +37,7 @@ public:
 	int getBorrowedCnt(void) const;
 	int getOverdueCnt(void) const;
 	void returnBooks(int isbn);
-	void borrowBooks(string& title);
+	void borrowBooks(const string& title);
 	void showOverdue(void) const;
 	void showBorrowed(void) const;
 };
