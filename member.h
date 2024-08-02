@@ -27,8 +27,8 @@ class Member {
 	int id;				//	id
 	int borrowed_cnt;	//	현재 빌린 책 수
 	int overdue_cnt;	//  반납이 안된 책 수
-	map<int, EachBook> overduebooks;	// 미반납된 책 리스트 : <ISBN, Book>
-	map<int, EachBook> borrowedbooks;	// 빌린 책 리스트 : <ISBN, Book>
+	map<int, Book> overduebooks;	// 미반납된 책 리스트 : <ISBN, Book>
+	map<int, Book> borrowedbooks;	// 빌린 책 리스트 : <ISBN, Book>
 	string name;		//  이름
 public:
 	Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ");

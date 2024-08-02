@@ -33,7 +33,6 @@ void Book::addBook(int isbn, const string& title, const string& author, const st
 	this->author = author;
 	this->publisher = publisher;
 	this->each.push_back(EachBook(isbn));
-	cout << "each size = " << each.size() << endl;
 }
 
 void Book::searchBook() const //책 검색
@@ -43,18 +42,25 @@ void Book::searchBook() const //책 검색
 	cout << "출판사 : " << this->getPublisher() << endl;
 }
 
-EachBook Book::borrowBook(int isbn, string& t) //책 대출
+Book Book::borrowBook(int isbn, string& t) //책 대출
 {
 	try {
 		cout << "ISBN: " << isbn << " 책을 대출합니다.\n";
 
 		for (auto& it : this->each)
+		{
+			//auto eachBook = dynamic_cast<Book>(it);
 			if (it.getISBN() == isbn)
 			{
 				it.setTitle(t);
+				cout << "책 제목 : " << this->getTitle() << endl;
+				cout << "저자 : " << this->getAuthor() << endl;
+				cout << "출판사 : " << this->getPublisher() << endl;
+
 				it.borrow(isbn);
-				return it;
+				return *this;
 			}
+		}
 	}
 	catch (exception& e) {
 		cout << "대출 불가\n";
@@ -104,10 +110,57 @@ void EachBook::return_book() {
 
 string EachBook::getTitle() const
 {
-	return this->title;
+	//return this->title;
+	return Book::getTitle();
+}
+
+void EachBook::setTitle(string t)
+{
+	this->title = t;
+}
+
+// 책 목록 읽기
+void loadBook(vector<Book>& vBook) {
+	string title, author, publisher;
+	string line;
+	int isbn = 1;
+
+	ifstream file("book_information.txt");
+	// file이 정상적으로 열렸는지 확인 
+	if (!file.is_open()) {
+		cout << "파일을 열 수 없습니다." << endl;
+		exit(1);
+	}
+
+	while (getline(file, line)) {
+		istringstream iss(line);
+
+		Book temp;
+		if (getline(iss, title, '\t') &&
+			getline(iss, author, '\t') &&
+			getline(iss, publisher, '\t')) {
+
+			temp.addBook(isbn++, title, author, publisher);
+			vBook.push_back(temp);
+		}
+	}
+
+	file.close();
 
 }
 
-void EachBook::setTitle(string t) {
-	this->title = t;
+// 책 목록 쓰기
+void storeBook(const vector<Book>& vBook) {
+	ofstream file("book_information.txt", ios::out);
+
+	if (!file.is_open()) {
+		cout << "파일을 열 수 없습니다." << endl;
+		exit(1);
+	}
+
+	for (const auto& book : vBook) {
+		file << book.getTitle() << '\t' << book.getAuthor() << '\t' << book.getPublisher() << '\n';
+	}
+
+	file.close();
 }

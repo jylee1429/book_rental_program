@@ -23,6 +23,7 @@ int main(void)
 	system("mode con:cols=150 lines=40 |title 도서 관리 프로그램");
 
 	MemberList List;
+	loadBook(book_list); //저장된 데이터 불러오기
 
 	while (true)
 	{
@@ -52,8 +53,10 @@ int main(void)
 			cin >> isbn;
 			tmp.addBook(isbn, title, author, publisher);
 			book_list.push_back(tmp);
-
+			cout << endl;
 			cout << "책 등록 완료\n";
+			storeBook(book_list);
+
 			break;
 		case 2: // 회원 등록 함수 호출
 			cout << "======= 회원 등록 =======\n";
@@ -110,7 +113,7 @@ int menuDraw()
 	columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
-	int x = 10;
+	int x = 0;
 	int y = 0;
 
 	return navigateMenu(x, y + 2, 7);

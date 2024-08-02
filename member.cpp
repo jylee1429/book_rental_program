@@ -131,7 +131,9 @@ void Member::returnBooks(int isbn) {
 void Member::borrowBooks(string& title) {
 	for (auto it = book_list.begin(); it != book_list.end(); it++) {
 		if (title == it->getTitle()) {
-			borrowedbooks.insert({ it->getBookISBN(), it->borrowBook(it->getBookISBN(),title) });
+			auto tmp = it->borrowBook(it->getBookISBN(), title);
+			cout << "tmp.getTitle() = " << tmp.getTitle() << endl;
+			borrowedbooks.insert({ it->getBookISBN(),tmp });
 			break;  // 한 권만 빌리면 반복을 종료
 		}
 	}
@@ -143,7 +145,7 @@ void Member::showOverdue(void) const {
 	}
 }
 void Member::showBorrowed(void) const {
-	for (auto& it : borrowedbooks) {
+	for (auto it : borrowedbooks) {
 
 		cout << "책이름 : " << it.second.getTitle() << "저자 : " << it.second.getAuthor() << "출판사 : " << it.second.getPublisher() << endl;
 	}
@@ -152,6 +154,8 @@ void Member::showBorrowed(void) const {
 
 /*				외부 함수				*/
 void inputInfo(int& id, string& name) {
-	cout << "ID와 이름을 차례대로 입력하세요 << ";
-	cin >> id >> name;
+	cout << "회원 ID : ";
+	cin >> id;
+	cout << "이름 : ";
+	cin >> name;
 }
