@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <conio.h>
+#include <map>
 #include "member.h"
 #include "book.h"
 
@@ -10,20 +11,26 @@ using namespace std;
 using namespace std::this_thread; // sleep_for, sleep_until
 using namespace std::chrono; // nanoseconds, system_clock, seconds
 
-vector<Book> book_list;
 int menuDraw();
 void gotoxy(int x, int y);
 void setConsoleColor(int background, int foreground);
 void printCentered(const string& text, int y, int width);
 int navigateMenu(int x, int y, int options);
 
+
+vector<Book> bookList;
+
 int main(void)
 {
 	/* 콘솔창 환경 설정 */
 	system("mode con:cols=150 lines=40 |title 도서 관리 프로그램");
 
-	MemberList List;
-	loadBook(book_list); //저장된 데이터 불러오기
+	MemberManage List;
+	string title, author, publisher;
+	int isbn, id, idx;
+	Book temp;
+
+	loadBook(bookList);														// 저장된 책 데이터 불러오기
 
 	while (true)
 	{
@@ -33,68 +40,67 @@ int main(void)
 			break;
 		}
 
-		Book tmp;
-		string title, author, publisher;
-		int isbn, id, idx;
-
 		cin.ignore();
 		cout << endl;
-		switch (menu)
-		{
-		case 1: // 책 등록 함수 호출
-			cout << "======= 책 등록 =======\n";
-			cout << "책 제목 : ";
-			getline(cin, title);
-			cout << "저자 : ";
-			getline(cin, author);
-			cout << "출판사 : ";
-			getline(cin, publisher);
-			cout << "ISBN : ";
-			cin >> isbn;
-			tmp.addBook(isbn, title, author, publisher);
-			book_list.push_back(tmp);
-			cout << endl;
-			storeBook(book_list);
 
-			break;
-		case 2: // 회원 등록 함수 호출
-			cout << "======= 회원 등록 =======\n";
-			List.memberRegister();
-			cout << "회원 등록 완료\n";
-			break;
-		case 3:// 도서 대출 
-			cout << "======= 대출 =======\n";
-			cout << "회원 id : ";
-			cin >> id;
-			cout << "책 제목 : ";
-			cin >> title;
-			List.memberBorrowBooks(id, title);
-			break;
-		case 4: //반납
-			cout << "======= 반납 =======\n";
-			cout << "회원 id : ";
-			cin >> id;
-			cout << "ISBN : ";
-			cin >> isbn;
-			List.memberReturnBooks(id, isbn);
-			break;
-		case 5: //도서 대출 현황
-			cout << "======= 도서 대출 현황 =======\n";
-			List.memberShow();
-			break;
-		case 6:// 등록 도서 목록
-			cout << "======= 등록 도서 목록 =======\n";
-			idx = 0;
-			for (auto& it : book_list)
-			{
-				cout << "[" << idx++ << "]\n";
-				it.searchBook();
+		switch (menu) {
+		// 책 등록 함수 호출
+			case 1:															
+				cout << "======= 책 등록 =======\n";
+				cout << "책 제목 : ";
+				getline(cin, title);
+				cout << "저자 : ";
+				getline(cin, author);
+				cout << "출판사 : ";
+				getline(cin, publisher);
+				cout << "ISBN : ";
+				cin >> isbn;
+
+				temp.setBookInfo(title, author, publisher);
+				temp.addBook(bookList, isbn);
 				cout << endl;
-			}
-			break;
-		default:
-			cout << "잘못된 선택입니다.\n";
-			break;
+
+				storeBook(bookList);
+				break;
+			// 회원 등록 함수 호출
+			case 2: 
+				cout << "======= 회원 등록 =======\n";
+				List.memberRegister();
+				cout << "회원 등록 완료\n";
+				break;
+			// 도서 대출 
+			case 3:
+				cout << "======= 대출 =======\n";
+				cout << "회원 id : ";
+				cin >> id;
+				cout << "책 제목 : ";
+				cin >> title;
+				
+				List.memberBorrowBooks(bookList, id, title);
+				break;
+			// 반납
+			case 4:
+				cout << "======= 반납 =======\n";
+				cout << "회원 id : ";
+				cin >> id;
+				cout << "ISBN : ";
+				cin >> isbn;
+				
+				List.memberReturnBooks(bookList, id, isbn);
+				break;
+			// 도서 대출 현황
+			case 5:
+				cout << "======= 도서 대출 현황 =======\n";
+				List.memberShow();
+				break;
+			// 등록 도서 목록
+			case 6:
+				cout << "======= 등록 도서 목록 =======\n";
+				List.showBoookList(bookList);
+				break;
+			default:
+				cout << "잘못된 선택입니다.\n";
+				break;
 		}
 		system("pause");
 	}

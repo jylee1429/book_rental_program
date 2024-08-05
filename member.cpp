@@ -14,7 +14,7 @@ extern vector<Book> book_list;
 
 
 // 회원 등록
-void MemberList::memberRegister(void) {
+void MemberManage::memberRegister(void) {
 	int id;
 	string name;
 
@@ -27,22 +27,19 @@ void MemberList::memberRegister(void) {
 }
 
 // 회원 리스트 출력
-void MemberList::memberShow(void) const {
+void MemberManage::memberShow(void) const {
 	for (const auto& it : list) {
 		cout << "ID: " << it.second->getID() << ", Name: " << it.second->getName() << endl;
-		cout << "-----현재 빌린 책 목록-----" << endl;
+		cout << "---------현재 빌린 책 목록---------" << endl;
 		it.second->showBorrowed();
 		cout << endl;
-		//cout << "-----현재 미납된 책 목록-----" << endl;
-		//it.second->showOverdue();
-		//cout << endl;
 	}
 }
 
 // id에 해당하는 회원 책 반납
-void MemberList::memberReturnBooks(int id, int isbn) {
+void MemberManage::memberReturnBooks(vector<Book>& booklist, int id, int isbn) {
 	if (list.find(id) != list.end()) {
-		list[id]->returnBooks(isbn);
+		list[id]->returnBooks(booklist, isbn);
 	}
 	else {
 		cout << "해당하는 회원이 없습니다" << endl;
@@ -51,33 +48,48 @@ void MemberList::memberReturnBooks(int id, int isbn) {
 }
 
 // id에 해당하는 회원 책 대출
-void MemberList::memberBorrowBooks(int id, string title) {
+void MemberManage::memberBorrowBooks(vector<Book>& book, int id, string title) {
 	if (list.find(id) != list.end()) {
-		list[id]->borrowBooks(title);
+		list[id]->borrowBooks(book, title);
 	}
 	else {
 		cout << "해당하는 회원이 없습니다" << endl;
 		return;
 	}
 }
-
-void MemberList::memberBorrowList(Member_maps::iterator& it) {
-	// it.first : id, it.second : member
+// 빌린 책 목록 출력
+void MemberManage::memberBorrowList(Member_maps::iterator& it) {
 	cout << "-----현재 빌린 책 목록-----" << endl;
 	(*it).second->showBorrowed();
 	cout << endl;
 }
 
-void MemberList::memberOverdueList(Member_maps::iterator& it) {
+void MemberManage::memberOverdueList(Member_maps::iterator& it) {
 	cout << "-----현재 빌린 책 목록-----" << endl;
 	(*it).second->showBorrowed();
 	cout << endl;
 }
 
+void MemberManage::showBoookList(vector<Book>& booklist) const {
+	int idx = 0;
+	sort(booklist.begin(), booklist.end(), sortCriteria);
 
+	for (auto& it : booklist) {
+		cout << "[" << idx++ << "]\n";
+		it.showBook();
+		cout << endl;
+	}
+}
+// 책 정렬 기준 
+bool sortCriteria(Book a, Book b) {
+	if (a.getTitle() < b.getTitle())
+		return true;
+	else
+		return false;
+}
 
 /*				Member함수				*/
-
+// Constructor
 Member::Member(int id, int  borrowed_cnt, int overdue_cnt, string name) {
 	this->id = id;
 	this->borrowed_cnt = borrowed_cnt;
@@ -102,56 +114,51 @@ int Member::getOverdueCnt(void) const {
 	return overdue_cnt;
 }
 // 책 반환
-void Member::returnBooks(int isbn) {
-
-	//auto it = overduebooks.find(isbn);
-
-	//if (it != overduebooks.end()) {
-	//	book_list.push_back(it->second);
-	//	overduebooks.erase(it);
-	//	cout << "책이 반납되었습니다" << endl;
-	//}
-	//else {
-	//	cout << "해당하는 책이 없습니다" << endl;
-	//	return;
-	//}
+void Member::returnBooks(vector<Book>& booklist, int isbn) {
+	// 해당하는 isbn의 책이 있는지 검색
 	auto it = borrowedbooks.find(isbn);
-
+	// 책이 있는 경우
 	if (it != borrowedbooks.end()) {
-		(*it).second.returnBook(isbn);
+		(*it).second.returnBook(booklist, isbn);
 		borrowedbooks.erase(it);
 	}
 	else {
 		cout << "해당하는 책이 없습니다" << endl;
-		return;
 	}
 }
-
-
 // 책 대여
-void Member::borrowBooks(string& title) {
-	for (auto it = book_list.begin(); it != book_list.end(); it++) {
+void Member::borrowBooks(vector<Book>& book, string& title) {
+	for (auto it = book.begin(); it != book.end(); it++) {
+		// 같은 이름의 책이 있는 경우
 		if (title == it->getTitle()) {
-			auto tmp = it->borrowBook(it->getBookISBN(), title);
-			if (tmp.getTitle() != "-")
-			{
+			int isbn = it->getBookISBN();
+			// 책이 없는 경우
+			if (isbn == -1) {
+				cout << "책이 없습니다." << endl;
+			}
+			// 해당 책 대여
+			auto tmp = it->borrowBook(isbn, title);
+
+			if (tmp.getTitle() != "-") {
 				borrowedbooks.insert({ it->getBookISBN(),tmp });
-				return;  // 한 권만 빌리면 반복을 종료
+				// 한 권만 빌리면 반복을 종료
+				return;  
 			}
 		}
 	}
+
 	cout << "대출 가능한 책이 없습니다.\n";
 }
-
+// 연체된 책 목록 출력
 void Member::showOverdue(void) const {
 	for (auto& it : overduebooks) {
-		cout << "책이름 : " << it.second.getTitle() << "저자 : " << it.second.getAuthor() << "출판사 : " << it.second.getPublisher() << endl;
+		cout << "책이름 : " << it.second.getTitle() << "\t저자 : " << it.second.getAuthor() << "\t출판사 : " << it.second.getPublisher() << endl;
 	}
 }
+// 대여한 책 목록 출력
 void Member::showBorrowed(void) const {
 	for (auto it : borrowedbooks) {
-
-		cout << "책이름 : " << it.second.getTitle() << "저자 : " << it.second.getAuthor() << "출판사 : " << it.second.getPublisher() << endl;
+		cout << "책이름 : " << it.second.getTitle() << "\t저자 : " << it.second.getAuthor() << "\t출판사 : " << it.second.getPublisher() << endl;
 	}
 }
 
