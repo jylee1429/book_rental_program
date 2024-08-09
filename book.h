@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <map>
 #include <algorithm>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,51 +18,54 @@ class EachBook;
 
 class Book {
 protected:
-	string title;				// Á¦¸ñ
-	string author;				// ÀúÀÚ
-	string publisher;			// ÃâÆÇ»ç
-	vector<EachBook> each;		// Á¦¸ñ, ÀúÀÚ, ÃâÆÇ»ç°¡ °°Àº Ã¥µé ÀúÀå(isbn ¹Ìµ¿ÀÏ)
-public:														
-	Book(string title="-", string author="", string publisher="");
-	int compareBook(vector<Book>& bookList);
-	virtual string getTitle() const;
-	string getAuthor() const;
-	string getPublisher() const;
-	void setBookInfo(string title, string author, string publisher);
-	int getBookISBN() const;
-	void addBook(vector<Book>& bookList, int isbn);
-	void addEachBook(int isbn);										// isbnÀÌ ´Ù¸¥ Ã¥ µî·Ï
-	void returnBook(vector<Book>& booklist, int isbn);
-	Book borrowBook(int isbn, const string& title);					//Ã¥ ´ëÃâ
-	void returnBook(int isbn);										//Ã¥ ¹İ³³
-	bool searchISBN(vector<Book>& booklist, int isbn);
-	void showBook() const;
-	bool returnISBN(vector<Book>& booklist, int isbn);
-	bool operator==(const Book& other) const;
+    string title;				// ì œëª©
+    string author;				// ì €ì
+    string publisher;			// ì¶œíŒì‚¬
+    vector<EachBook> each;		// ì œëª©, ì €ì, ì¶œíŒì‚¬ê°€ ê°™ì€ ì±…ë“¤ ì €ì¥(isbn ë¯¸ë™ì¼)
+public:
+    Book(string title="-", string author="", string publisher="");
+    int compareBook(vector<Book>& bookList);
+    virtual string getTitle() const;
+    string getAuthor() const;
+    string getPublisher() const;
+    void setBookInfo(string title, string author, string publisher);
+    int getBookISBN() const;
+    void addBook(vector<Book>& bookList, int isbn);
+    void addEachBook(int isbn);										// isbnì´ ë‹¤ë¥¸ ì±… ë“±ë¡
+    void returnBook(vector<Book>& booklist, int isbn);
+    Book borrowBook(int isbn, const string& title);					//ì±… ëŒ€ì¶œ
+    void returnBook(int isbn);										//ì±… ë°˜ë‚©
+    bool searchISBN(vector<Book>& booklist, int isbn);
+    void showBook() const;
+    bool returnISBN(vector<Book>& booklist, int isbn);
+    bool searchBook(vector<Book>& bookList, vector<Book>& searchBookList, string title);
+    bool checkSameISBN(vector<Book>& booklist, int isbn);
+    bool operator==(const Book& other) const;
 };
 
 
 class EachBook : public Book {
-	int ISBN;
-	string title;
-	bool borrow_status;							 //´ëÃâ ¿©ºÎ
+    int ISBN;
+    string title;
+    bool borrow_status;							 //ëŒ€ì¶œ ì—¬ë¶€
 public:
-	EachBook();
-	EachBook(int ISBN);
-	void setISBN(int isbn);
-	int getISBN() const;
-	bool available();
-	void borrow(int ISBN);						//Ã¥ ´ëÃâ
-	void returnBook();
-	string getTitle() const;
-	void setTitle(string t);
+    EachBook();
+    EachBook(int ISBN);
+    void setISBN(int isbn);
+    int getISBN() const;
+    bool available();
+    void borrow(int ISBN);						//ì±… ëŒ€ì¶œ
+    void returnBook();
+    string getTitle() const;
+    void setTitle(string t);
 };
 
+bool checkTitle(vector<Book>& bookList, vector<Book>& includeList, string str);
 
 
-// Ã¥ Á¤º¸ ºÒ·¯¿À±â
+// ì±… ì •ë³´ ë¶ˆëŸ¬ì˜¤ê¸°
 void loadBook(vector<Book>& vBook);
-// Ã¥ Á¤º¸ ÀúÀå
+// ì±… ì •ë³´ ì €ì¥
 void storeBook(const vector<Book>& vBook);
 
 #endif

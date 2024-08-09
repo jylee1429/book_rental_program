@@ -2,6 +2,7 @@
 #define _MEMBER_H_
 
 #include <map>
+
 using namespace std;
 
 #include "book.h"
@@ -13,36 +14,37 @@ typedef map<int, shared_ptr<Member>> Member_maps;
 
 
 class MemberManage {
-	Member_maps list;				// È¸¿ø Á¤º¸ ¸®½ºÆ® : <id, Member>
+    Member_maps list;				// íšŒì› ì •ë³´ ë¦¬ìŠ¤íŠ¸ : <id, Member>
 
 public:
-	void memberRegister(void);
-	void memberShow(void) const;
-	void memberBorrowList(Member_maps::iterator& it);
-	void memberOverdueList(Member_maps::iterator& it);
-	void memberReturnBooks(vector<Book>& booklist, int id, int isbn);
-	void memberBorrowBooks(vector<Book>& book, int id, string title);
-	void showBoookList(vector<Book>& booklist) const;
+    void memberRegister(void);
+    void memberShow(void) const;
+    void memberBorrowList(Member_maps::iterator& it);
+    void memberOverdueList(Member_maps::iterator& it);
+    void memberReturnBooks(vector<Book>& booklist, int id, int isbn);
+    void memberBorrowBooks(vector<Book>& book, int id, string title);
+    void showBoookList(vector<Book>& booklist) const;
+    bool checkID(int id, string& name);
 };
 
 class Member {
-	int id;							//	id
-	int borrowed_cnt;				//	ÇöÀç ºô¸° Ã¥ ¼ö
-	int overdue_cnt;				//  ¹İ³³ÀÌ ¾ÈµÈ Ã¥ ¼ö
-	map<int, Book> overduebooks;	//  ¹Ì¹İ³³µÈ Ã¥ ¸®½ºÆ® : <ISBN, Book>
-	map<int, Book> borrowedbooks;	//  ºô¸° Ã¥ ¸®½ºÆ® : <ISBN, Book>
-	string name;					//  ÀÌ¸§
+    int id;							//	id
+    int borrowed_cnt;				//	í˜„ì¬ ë¹Œë¦° ì±… ìˆ˜
+    int overdue_cnt;				//  ë°˜ë‚©ì´ ì•ˆëœ ì±… ìˆ˜
+    map<int, Book> overduebooks;	//  ë¯¸ë°˜ë‚©ëœ ì±… ë¦¬ìŠ¤íŠ¸ : <ISBN, Book>
+    map<int, Book> borrowedbooks;	//  ë¹Œë¦° ì±… ë¦¬ìŠ¤íŠ¸ : <ISBN, Book>
+    string name;					//  ì´ë¦„
 
 public:
-	Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ");
-	string getName(void) const;
-	int getID(void) const;
-	int getBorrowedCnt(void) const;
-	int getOverdueCnt(void) const;
-	void returnBooks(vector<Book>& booklist, int isbn);
-	void borrowBooks(vector<Book>& book, string& title);
-	void showOverdue(void) const;
-	void showBorrowed(void) const;
+    Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ");
+    string getName(void) const;
+    int getID(void) const;
+    int getBorrowedCnt(void) const;
+    int getOverdueCnt(void) const;
+    void returnBooks(vector<Book>& booklist, int isbn);
+    void borrowBooks(vector<Book>& book, string& title);
+    void showOverdue(void) const;
+    void showBorrowed(void) const;
 };
 
 

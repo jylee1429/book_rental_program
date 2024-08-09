@@ -10,163 +10,169 @@ using namespace std;
 
 extern vector<Book> book_list;
 
-/*				MemberListÇÔ¼ö				*/
+/*				MemberListí•¨ìˆ˜				*/
 
 
-// È¸¿ø µî·Ï
+// íšŒì› ë“±ë¡
 void MemberManage::memberRegister(void) {
-	int id;
-	string name;
+    int id;
+    string name;
 
-	// È¸¿ø Á¤º¸ ÀÔ·Â
-	inputInfo(id, name);
-	Member_ptr mem = make_shared<Member>(id, 0, 0, name);
-	//¿¹¿Ü Ã³¸®
+    // íšŒì› ì •ë³´ ì…ë ¥
+    inputInfo(id, name);
+    Member_ptr mem = make_shared<Member>(id, 0, 0, name);
+    //ì˜ˆì™¸ ì²˜ë¦¬
 
-	list.insert({ id, mem });
+    list.insert({ id, mem });
 }
 
-// È¸¿ø ¸®½ºÆ® Ãâ·Â
+// íšŒì› ë¦¬ìŠ¤íŠ¸ ì¶œë ¥
 void MemberManage::memberShow(void) const {
-	for (const auto& it : list) {
-		cout << "ID: " << it.second->getID() << ", Name: " << it.second->getName() << endl;
-		cout << "---------ÇöÀç ºô¸° Ã¥ ¸ñ·Ï---------" << endl;
-		it.second->showBorrowed();
-		cout << endl;
-	}
+    for (const auto& it : list) {
+        cout << "ID: " << it.second->getID() << ", Name: " << it.second->getName() << endl;
+        cout << "---------í˜„ì¬ ë¹Œë¦° ì±… ëª©ë¡---------" << endl;
+        it.second->showBorrowed();
+        cout << endl;
+    }
 }
-
-// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ¹İ³³
+bool MemberManage::checkID(int id, string& name){
+    if (list.find(id) != list.end()) {
+        name=list[id]->getName();
+        return true;
+    }
+    return false;
+}
+// idì— í•´ë‹¹í•˜ëŠ” íšŒì› ì±… ë°˜ë‚©
 void MemberManage::memberReturnBooks(vector<Book>& booklist, int id, int isbn) {
-	if (list.find(id) != list.end()) {
-		list[id]->returnBooks(booklist, isbn);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
-		return;
-	}
+    if (list.find(id) != list.end()) {
+        list[id]->returnBooks(booklist, isbn);
+    }
+    else {
+        cout << "í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+        return;
+    }
 }
 
-// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ´ëÃâ
+// idì— í•´ë‹¹í•˜ëŠ” íšŒì› ì±… ëŒ€ì¶œ
 void MemberManage::memberBorrowBooks(vector<Book>& book, int id, string title) {
-	if (list.find(id) != list.end()) {
-		list[id]->borrowBooks(book, title);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
-		return;
-	}
+    if (list.find(id) != list.end()) {
+        list[id]->borrowBooks(book, title);
+    }
+    else {
+        // cout << "í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+        return;
+    }
 }
-// ºô¸° Ã¥ ¸ñ·Ï Ãâ·Â
+// ë¹Œë¦° ì±… ëª©ë¡ ì¶œë ¥
 void MemberManage::memberBorrowList(Member_maps::iterator& it) {
-	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
-	(*it).second->showBorrowed();
-	cout << endl;
+    cout << "-----í˜„ì¬ ë¹Œë¦° ì±… ëª©ë¡-----" << endl;
+    (*it).second->showBorrowed();
+    cout << endl;
 }
 
 void MemberManage::memberOverdueList(Member_maps::iterator& it) {
-	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
-	(*it).second->showBorrowed();
-	cout << endl;
+    cout << "-----í˜„ì¬ ë¹Œë¦° ì±… ëª©ë¡-----" << endl;
+    (*it).second->showBorrowed();
+    cout << endl;
 }
 
 void MemberManage::showBoookList(vector<Book>& booklist) const {
-	int idx = 0;
-	sort(booklist.begin(), booklist.end(), sortCriteria);
+    int idx = 0;
+    sort(booklist.begin(), booklist.end(), sortCriteria);
 
-	for (auto& it : booklist) {
-		cout << "[" << idx++ << "]\n";
-		it.showBook();
-		cout << endl;
-	}
+    for (auto& it : booklist) {
+        cout << "[" << idx++ << "]\n";
+        it.showBook();
+        cout << endl;
+    }
 }
-// Ã¥ Á¤·Ä ±âÁØ 
+// ì±… ì •ë ¬ ê¸°ì¤€
 bool sortCriteria(Book a, Book b) {
-	if (a.getTitle() < b.getTitle())
-		return true;
-	else
-		return false;
+    if (a.getTitle() < b.getTitle())
+        return true;
+    else
+        return false;
 }
 
-/*				MemberÇÔ¼ö				*/
+/*				Memberí•¨ìˆ˜				*/
 // Constructor
 Member::Member(int id, int  borrowed_cnt, int overdue_cnt, string name) {
-	this->id = id;
-	this->borrowed_cnt = borrowed_cnt;
-	this->overdue_cnt = overdue_cnt;
-	this->name = name;
+    this->id = id;
+    this->borrowed_cnt = borrowed_cnt;
+    this->overdue_cnt = overdue_cnt;
+    this->name = name;
 }
 
-// È¸¿ø ÀÌ¸§ Ãâ·Â
+// íšŒì› ì´ë¦„ ì¶œë ¥
 string Member::getName(void) const {
-	return name;
+    return name;
 }
-// È¸¿ø ID Ãâ·Â
+// íšŒì› ID ì¶œë ¥
 int Member::getID(void) const {
-	return id;
+    return id;
 }
-// ÇöÀç ºô¸° Ã¥ ¼ö Ãâ·Â
+// í˜„ì¬ ë¹Œë¦° ì±… ìˆ˜ ì¶œë ¥
 int Member::getBorrowedCnt(void) const {
-	return borrowed_cnt;
+    return borrowed_cnt;
 }
-// ¹Ì³³µÈ Ã¥ ¼ö Ãâ·Â
+// ë¯¸ë‚©ëœ ì±… ìˆ˜ ì¶œë ¥
 int Member::getOverdueCnt(void) const {
-	return overdue_cnt;
+    return overdue_cnt;
 }
-// Ã¥ ¹İÈ¯
+// ì±… ë°˜í™˜
 void Member::returnBooks(vector<Book>& booklist, int isbn) {
-	// ÇØ´çÇÏ´Â isbnÀÇ Ã¥ÀÌ ÀÖ´ÂÁö °Ë»ö
-	auto it = borrowedbooks.find(isbn);
-	// Ã¥ÀÌ ÀÖ´Â °æ¿ì
-	if (it != borrowedbooks.end()) {
-		(*it).second.returnBook(booklist, isbn);
-		borrowedbooks.erase(it);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â Ã¥ÀÌ ¾ø½À´Ï´Ù" << endl;
-	}
+    // í•´ë‹¹í•˜ëŠ” isbnì˜ ì±…ì´ ìˆëŠ”ì§€ ê²€ìƒ‰
+    auto it = borrowedbooks.find(isbn);
+    // ì±…ì´ ìˆëŠ” ê²½ìš°
+    if (it != borrowedbooks.end()) {
+        (*it).second.returnBook(booklist, isbn);
+        borrowedbooks.erase(it);
+    }
+    else {
+        cout << "í•´ë‹¹í•˜ëŠ” ì±…ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+    }
 }
-// Ã¥ ´ë¿©
+// ì±… ëŒ€ì—¬
 void Member::borrowBooks(vector<Book>& book, string& title) {
-	for (auto it = book.begin(); it != book.end(); it++) {
-		// °°Àº ÀÌ¸§ÀÇ Ã¥ÀÌ ÀÖ´Â °æ¿ì
-		if (title == it->getTitle()) {
-			int isbn = it->getBookISBN();
-			// Ã¥ÀÌ ¾ø´Â °æ¿ì
-			if (isbn == -1) {
-				cout << "Ã¥ÀÌ ¾ø½À´Ï´Ù." << endl;
-			}
-			// ÇØ´ç Ã¥ ´ë¿©
-			auto tmp = it->borrowBook(isbn, title);
+    for (auto it = book.begin(); it != book.end(); it++) {
+        // ê°™ì€ ì´ë¦„ì˜ ì±…ì´ ìˆëŠ” ê²½ìš°
+        if (title == it->getTitle()) {
+            int isbn = it->getBookISBN();
+            // ì±…ì´ ì—†ëŠ” ê²½ìš°
+            if (isbn == -1) {
+                // cout << "ì±…ì´ ì—†ìŠµë‹ˆë‹¤." << endl;
+            }
+            // í•´ë‹¹ ì±… ëŒ€ì—¬
+            auto tmp = it->borrowBook(isbn, title);
 
-			if (tmp.getTitle() != "-") {
-				borrowedbooks.insert({ it->getBookISBN(),tmp });
-				// ÇÑ ±Ç¸¸ ºô¸®¸é ¹İº¹À» Á¾·á
-				return;  
-			}
-		}
-	}
+            if (tmp.getTitle() != "-") {
+                borrowedbooks.insert({ it->getBookISBN(),tmp });
+                // í•œ ê¶Œë§Œ ë¹Œë¦¬ë©´ ë°˜ë³µì„ ì¢…ë£Œ
+                return;
+            }
+        }
+    }
 
-	cout << "´ëÃâ °¡´ÉÇÑ Ã¥ÀÌ ¾ø½À´Ï´Ù.\n";
+    cout << "ëŒ€ì¶œ ê°€ëŠ¥í•œ ì±…ì´ ì—†ìŠµë‹ˆë‹¤.\n";
 }
-// ¿¬Ã¼µÈ Ã¥ ¸ñ·Ï Ãâ·Â
+// ì—°ì²´ëœ ì±… ëª©ë¡ ì¶œë ¥
 void Member::showOverdue(void) const {
-	for (auto& it : overduebooks) {
-		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "\tÀúÀÚ : " << it.second.getAuthor() << "\tÃâÆÇ»ç : " << it.second.getPublisher() << endl;
-	}
+    for (auto& it : overduebooks) {
+        cout << "ì±…ì´ë¦„ : " << it.second.getTitle() << "\tì €ì : " << it.second.getAuthor() << "\tì¶œíŒì‚¬ : " << it.second.getPublisher() << endl;
+    }
 }
-// ´ë¿©ÇÑ Ã¥ ¸ñ·Ï Ãâ·Â
+// ëŒ€ì—¬í•œ ì±… ëª©ë¡ ì¶œë ¥
 void Member::showBorrowed(void) const {
-	for (auto it : borrowedbooks) {
-		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "\tÀúÀÚ : " << it.second.getAuthor() << "\tÃâÆÇ»ç : " << it.second.getPublisher() << endl;
-	}
+    for (auto it : borrowedbooks) {
+        cout << "ì±…ì´ë¦„ : " << it.second.getTitle() << "\tì €ì : " << it.second.getAuthor() << "\tì¶œíŒì‚¬ : " << it.second.getPublisher() << endl;
+    }
 }
 
 
-/*				¿ÜºÎ ÇÔ¼ö				*/
+/*				ì™¸ë¶€ í•¨ìˆ˜				*/
 void inputInfo(int& id, string& name) {
-	cout << "È¸¿ø ID : ";
-	cin >> id;
-	cout << "ÀÌ¸§ : ";
-	cin >> name;
+    cout << "íšŒì› ID : ";
+    cin >> id;
+    cout << "ì´ë¦„ : ";
+    cin >> name;
 }
