@@ -12,19 +12,19 @@ using namespace std;
 
 extern vector<Book> book_list;
 
-/*				MemberListí•¨ìˆ˜				*/
+/*				MemberListÇÔ¼ö				*/
 
 
-// íšŒì› ë“±ë¡
-void MemberManage::memberRegister(int id, string name) {
+// È¸¿ø µî·Ï
+void MemberManage::memberRegister(int id, string name, string tel) {
 
-	Member_ptr mem = make_shared<Member>(id, 0, 0, name);
-	//ì˜ˆì™¸ ì²˜ë¦¬
+    Member_ptr mem = make_shared<Member>(id, 0, 0, name, tel);
+	//¿¹¿Ü Ã³¸®
 
 	list.insert({ id, mem });
 }
 
-// íšŒì› ë¦¬ìŠ¤íŠ¸ ì¶œë ¥
+// È¸¿ø ¸®½ºÆ® Ãâ·Â
 Member_maps MemberManage::memberShow(void) const {
     return list;
 }
@@ -36,18 +36,18 @@ bool MemberManage::checkID(int id, string& name) {
     return false;
 }
 
-// idì— í•´ë‹¹í•˜ëŠ” íšŒì› ì±… ë°˜ë‚©
+// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ¹İ³³
 void MemberManage::memberReturnBooks(vector<Book>& booklist, int id, int isbn) {
 	if (list.find(id) != list.end()) {
 		list[id]->returnBooks(booklist, isbn);
 	}
 	else {
-        //cout << "í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+        //cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
         return;
 	}
 }
 
-// idì— í•´ë‹¹í•˜ëŠ” íšŒì› ì±… ëŒ€ì¶œ
+// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ´ëÃâ
 bool MemberManage::memberBorrowBooks(vector<Book>& book, int id, string title) {
 	if (list.find(id) != list.end()) {
         if(list[id]->borrowBooks(book, title))
@@ -56,19 +56,19 @@ bool MemberManage::memberBorrowBooks(vector<Book>& book, int id, string title) {
             return false;
 	}
 	else {
-        //cout << "í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+        //cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
         return false;
 	}
 }
-// ë¹Œë¦° ì±… ëª©ë¡ ì¶œë ¥
+// ºô¸° Ã¥ ¸ñ·Ï Ãâ·Â
 void MemberManage::memberBorrowList(Member_maps::iterator& it) {
-	cout << "-----í˜„ì¬ ë¹Œë¦° ì±… ëª©ë¡-----" << endl;
+	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
 	(*it).second->showBorrowed();
 	cout << endl;
 }
 
 void MemberManage::memberOverdueList(Member_maps::iterator& it) {
-	cout << "-----í˜„ì¬ ë¹Œë¦° ì±… ëª©ë¡-----" << endl;
+	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
 	(*it).second->showBorrowed();
 	cout << endl;
 }
@@ -83,7 +83,7 @@ void MemberManage::showBoookList(vector<Book>& booklist) const {
 		cout << endl;
 	}
 }
-// ì±… ì •ë ¬ ê¸°ì¤€ 
+// Ã¥ Á¤·Ä ±âÁØ 
 bool sortCriteria(Book a, Book b) {
 	if (a.getTitle() < b.getTitle())
 		return true;
@@ -91,51 +91,56 @@ bool sortCriteria(Book a, Book b) {
 		return false;
 }
 
-/*				Memberí•¨ìˆ˜				*/
+/*				MemberÇÔ¼ö				*/
 // Constructor
-Member::Member(int id, int  borrowed_cnt, int overdue_cnt, string name) {
+Member::Member(int id, int  borrowed_cnt, int overdue_cnt, string name, string tel) {
 	this->id = id;
 	this->borrowed_cnt = borrowed_cnt;
 	this->overdue_cnt = overdue_cnt;
 	this->name = name;
+        this->tel=tel;
 }
 
-// íšŒì› ì´ë¦„ ì¶œë ¥
+// È¸¿ø ÀÌ¸§ Ãâ·Â
 string Member::getName(void) const {
 	return name;
 }
-// íšŒì› ID ì¶œë ¥
+// È¸¿ø ID Ãâ·Â
 int Member::getID(void) const {
 	return id;
 }
-// í˜„ì¬ ë¹Œë¦° ì±… ìˆ˜ ì¶œë ¥
+//È¸¿ø ÀüÈ­¹øÈ£ Ãâ·Â
+string Member::getTel(void)const{
+    return tel;
+}
+// ÇöÀç ºô¸° Ã¥ ¼ö Ãâ·Â
 int Member::getBorrowedCnt(void) const {
 	return borrowed_cnt;
 }
-// ë¯¸ë‚©ëœ ì±… ìˆ˜ ì¶œë ¥
+// ¹Ì³³µÈ Ã¥ ¼ö Ãâ·Â
 int Member::getOverdueCnt(void) const {
 	return overdue_cnt;
 }
-// ì±… ë°˜í™˜
+// Ã¥ ¹İÈ¯
 void Member::returnBooks(vector<Book>& booklist, int isbn) {
-	// í•´ë‹¹í•˜ëŠ” isbnì˜ ì±…ì´ ìˆëŠ”ì§€ ê²€ìƒ‰
+	// ÇØ´çÇÏ´Â isbnÀÇ Ã¥ÀÌ ÀÖ´ÂÁö °Ë»ö
 	auto it = borrowedbooks.find(isbn);
-	// ì±…ì´ ìˆëŠ” ê²½ìš°
+	// Ã¥ÀÌ ÀÖ´Â °æ¿ì
 	if (it != borrowedbooks.end()) {
 		(*it).second.returnBook(booklist, isbn);
 		borrowedbooks.erase(it);
 	}
 	else {
-        //cout << "í•´ë‹¹í•˜ëŠ” ì±…ì´ ì—†ìŠµë‹ˆë‹¤" << endl;
+        //cout << "ÇØ´çÇÏ´Â Ã¥ÀÌ ¾ø½À´Ï´Ù" << endl;
 	}
 }
-// ë°˜ë‚©í•  ì±… isbnìœ¼ë¡œ ê²€ìƒ‰
+// ¹İ³³ÇÒ Ã¥ isbnÀ¸·Î °Ë»ö
 QStringList Member::checkReturnBook(int isbn)
 {
     auto it =borrowedbooks.find(isbn);
      QStringList list;
     qDebug()<<borrowedbooks.size();
-    if(it!=borrowedbooks.end()) //ì±…ì´ ìˆëŠ” ê²½ìš°
+    if(it!=borrowedbooks.end()) //Ã¥ÀÌ ÀÖ´Â °æ¿ì
         list<<QString::fromStdString(it->second.getTitle())<<QString::fromStdString(it->second.getAuthor())<<QString::fromStdString(it->second.getPublisher());
     else
         list<<"";
@@ -143,47 +148,47 @@ QStringList Member::checkReturnBook(int isbn)
     return list;
 }
 
-// ì±… ëŒ€ì—¬
+// Ã¥ ´ë¿©
 bool Member::borrowBooks(vector<Book>& book, string& title) {
 	for (auto it = book.begin(); it != book.end(); it++) {
-		// ê°™ì€ ì´ë¦„ì˜ ì±…ì´ ìˆëŠ” ê²½ìš°
+		// °°Àº ÀÌ¸§ÀÇ Ã¥ÀÌ ÀÖ´Â °æ¿ì
 		if (title == it->getTitle()) {
 			int isbn = it->getBookISBN();
-			// ì±…ì´ ì—†ëŠ” ê²½ìš°
+			// Ã¥ÀÌ ¾ø´Â °æ¿ì
 			if (isbn == -1) {
-				cout << "ì±…ì´ ì—†ìŠµë‹ˆë‹¤." << endl;
+				cout << "Ã¥ÀÌ ¾ø½À´Ï´Ù." << endl;
 			}
-			// í•´ë‹¹ ì±… ëŒ€ì—¬
+			// ÇØ´ç Ã¥ ´ë¿©
 			auto tmp = it->borrowBook(isbn, title);
 
 			if (tmp.getTitle() != "-") {
 				borrowedbooks.insert({ it->getBookISBN(),tmp });
-				// í•œ ê¶Œë§Œ ë¹Œë¦¬ë©´ ë°˜ë³µì„ ì¢…ë£Œ
+				// ÇÑ ±Ç¸¸ ºô¸®¸é ¹İº¹À» Á¾·á
                 return true;
 			}
 		}
 	}
-	cout << "ëŒ€ì¶œ ê°€ëŠ¥í•œ ì±…ì´ ì—†ìŠµë‹ˆë‹¤.\n";
+	cout << "´ëÃâ °¡´ÉÇÑ Ã¥ÀÌ ¾ø½À´Ï´Ù.\n";
     return false;
 }
-// ì—°ì²´ëœ ì±… ëª©ë¡ ì¶œë ¥
+// ¿¬Ã¼µÈ Ã¥ ¸ñ·Ï Ãâ·Â
 void Member::showOverdue(void) const {
 	for (auto& it : overduebooks) {
-		cout << "ì±…ì´ë¦„ : " << it.second.getTitle() << "\tì €ì : " << it.second.getAuthor() << "\tì¶œíŒì‚¬ : " << it.second.getPublisher() << endl;
+		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "\tÀúÀÚ : " << it.second.getAuthor() << "\tÃâÆÇ»ç : " << it.second.getPublisher() << endl;
 	}
 }
-// ëŒ€ì—¬í•œ ì±… ëª©ë¡ ì¶œë ¥
+// ´ë¿©ÇÑ Ã¥ ¸ñ·Ï Ãâ·Â
 void Member::showBorrowed(void) const {
 	for (auto it : borrowedbooks) {
-		cout << "ì±…ì´ë¦„ : " << it.second.getTitle() << "\tì €ì : " << it.second.getAuthor() << "\tì¶œíŒì‚¬ : " << it.second.getPublisher() << endl;
+		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "\tÀúÀÚ : " << it.second.getAuthor() << "\tÃâÆÇ»ç : " << it.second.getPublisher() << endl;
 	}
 }
 
 
-/*				ì™¸ë¶€ í•¨ìˆ˜				*/
+/*				¿ÜºÎ ÇÔ¼ö				*/
 void inputInfo(int& id, string& name) {
-	cout << "íšŒì› ID : ";
+	cout << "È¸¿ø ID : ";
 	cin >> id;
-	cout << "ì´ë¦„ : ";
+	cout << "ÀÌ¸§ : ";
 	cin >> name;
 }

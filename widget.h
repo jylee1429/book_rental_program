@@ -16,7 +16,6 @@ class Widget : public QWidget
 
 public:
     Widget(QWidget *parent = nullptr);
-    friend void showMem(QTableWidget *t, QString id, QString name, int row);
     void initBookTable(void);
     void buttonFunc(void);
     void initBorrow(void);

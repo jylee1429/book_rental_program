@@ -15,10 +15,10 @@ typedef map<int, shared_ptr<Member>> Member_maps;
 typedef map<int, shared_ptr<Book>> book_maps;
 
 class MemberManage {
-	Member_maps list;				// íšŒì› ì •ë³´ ë¦¬ìŠ¤íŠ¸ : <id, Member>
+	Member_maps list;				// È¸¿ø Á¤º¸ ¸®½ºÆ® : <id, Member>
 
 public:
-    void memberRegister(int id, string name);
+    void memberRegister(int id, string name, string tel);
     Member_maps memberShow(void) const;
 	void memberBorrowList(Member_maps::iterator& it);
 	void memberOverdueList(Member_maps::iterator& it);
@@ -30,16 +30,17 @@ public:
 
 class Member {
 	int id;							//	id
-	int borrowed_cnt;				//	í˜„ì¬ ë¹Œë¦° ì±… ìˆ˜
-	int overdue_cnt;				//  ë°˜ë‚©ì´ ì•ˆëœ ì±… ìˆ˜
-	map<int, Book> overduebooks;	//  ë¯¸ë°˜ë‚©ëœ ì±… ë¦¬ìŠ¤íŠ¸ : <ISBN, Book>
-	map<int, Book> borrowedbooks;	//  ë¹Œë¦° ì±… ë¦¬ìŠ¤íŠ¸ : <ISBN, Book>
-	string name;					//  ì´ë¦„
-
+	int borrowed_cnt;				//	ÇöÀç ºô¸° Ã¥ ¼ö
+    int overdue_cnt;                        	//  ¹İ³³ÀÌ ¾ÈµÈ Ã¥ ¼ö
+	map<int, Book> overduebooks;	//  ¹Ì¹İ³³µÈ Ã¥ ¸®½ºÆ® : <ISBN, Book>
+	map<int, Book> borrowedbooks;	//  ºô¸° Ã¥ ¸®½ºÆ® : <ISBN, Book>
+    string name;                                    //  ÀÌ¸§
+        string tel;                                       // ÀüÈ­¹øÈ£
 public:
-	Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ");
+    Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ", string tel = " ");
 	string getName(void) const;
 	int getID(void) const;
+    string getTel(void)const;
 	int getBorrowedCnt(void) const;
 	int getOverdueCnt(void) const;
 	void returnBooks(vector<Book>& booklist, int isbn);

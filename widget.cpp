@@ -10,7 +10,7 @@
 #include <QTableWidget>
 #include<QStringList>
 #include <QColor>
-void showMem(QTableWidget* t, QString id, QString name, int row);
+void showMem(QTableWidget* t, QString id, QString name, QString tel,int row);
 
 vector<Book> bookList;
 vector<Book> includeList;
@@ -217,19 +217,22 @@ void Widget::regMem() //회원 등록
 {
     QString RegId = ui->RegMemId->toPlainText();
     QString name = ui->RegMemName->toPlainText();
+    QString tel = ui->RegMemTel->toPlainText();
     qDebug() << RegId;
     qDebug() << name;
-    if (RegId.toInt() == 0 || name == "") // 둘 중 하나라도 입력 누락되면 메시지 창
-        QMessageBox::information(this, "입력 누락", "ID와 이름 모두 입력해야 합니다.", QMessageBox::Ok);
+    qDebug()<<tel;
+    if (RegId.toInt() == 0 || name == ""|| tel=="") // 둘 중 하나라도 입력 누락되면 메시지 창
+        QMessageBox::information(this, "입력 누락", "ID, 전화번호, 이름을 모두 입력해야 합니다.", QMessageBox::Ok);
     else
     {
         if (checkAvail())
         {
-            memberMange.memberRegister(RegId.toInt(), name.toStdString());
+            memberMange.memberRegister(RegId.toInt(), name.toStdString(),tel.toStdString());
             QMessageBox::information(this,"회원 등록", "회원 등록을 완료하였습니다.",QMessageBox::Ok);
             qDebug() << "회원 등록 완료";
             ui->RegMemId->clear();
             ui->RegMemName->clear();
+            ui->RegMemTel->clear();
         }
 
     }
@@ -240,12 +243,13 @@ void Widget::lookUpMem()  //회원 조회
 {
     QString Id = ui->lookUpMemId->toPlainText();
     QString name = ui->lookUpMemName->toPlainText();
+    QString tel = ui->lookUpMemTel->toPlainText();
+
     QTableWidget* memTableWidget = ui->memTable;
     memTableWidget->clear();
     QStringList header;
     header << "ID" << "이름" << "전화번호";
     memTableWidget->setHorizontalHeaderLabels(header);
-
 
     /*  전체 조회 */
     Member_maps m = memberMange.memberShow(); //멤버 리스트 반환 받음
@@ -257,28 +261,20 @@ void Widget::lookUpMem()  //회원 조회
         int row = 0;
         for (auto& it : m)
         {
-            if (Id.toInt() == 0 && name == "") //전체 검색
-                showMem(memTableWidget, QString::number(it.first), QString::fromStdString(it.second->getName()), row++);
-            else if (name == "") //id로 검색
+            bool matchId = (Id.toInt() == 0 || Id.toInt() == it.first);
+            bool matchName = (name.isEmpty() || QString::fromStdString(it.second->getName()) == name);
+            bool matchTel = (tel.isEmpty() || QString::fromStdString(it.second->getTel()) == tel);
+
+            if (matchId && matchName && matchTel)
             {
-                if (Id.toInt() == it.first)
-                    showMem(memTableWidget, QString::number(it.first), QString::fromStdString(it.second->getName()), row++);
-            }
-            else if (Id.toInt() == 0) //이름으로 검색
-            {
-                if (QString::fromStdString(it.second->getName()) == name)
-                    showMem(memTableWidget, QString::number(it.first), QString::fromStdString(it.second->getName()), row++);
-            }
-            else //id와 이름 한번에 검색
-            {
-                if (Id.toInt() == it.first && QString::fromStdString(it.second->getName()) == name)
-                    showMem(memTableWidget, QString::number(it.first), QString::fromStdString(it.second->getName()), row++);
+                showMem(memTableWidget, QString::number(it.first), QString::fromStdString(it.second->getName()), QString::fromStdString(it.second->getTel()), row++);
             }
         }
+
     }
 }
 
-void showMem(QTableWidget* t, QString id, QString name, int row) //좌측 회원 표에 출력
+void showMem(QTableWidget* t, QString id, QString name, QString tel, int row) //좌측 회원 표에 출력
 {
     QTableWidgetItem* item;
     /* 회원 id 출력 */
@@ -290,6 +286,11 @@ void showMem(QTableWidget* t, QString id, QString name, int row) //좌측 회원
     item = new QTableWidgetItem;
     item->setText(name);
     t->setItem(row, 1, item);
+
+    /* 회원 전화번호 출력 */
+    item = new QTableWidgetItem;
+    item->setText(tel);
+    t->setItem(row,2,item);
     row++;
 }
 
