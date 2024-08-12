@@ -1,203 +1,3 @@
-// #include "widget.h"
-// #include "./ui_widget.h"
-// #include "member.h"
-
-// #include <QString>
-// #include <QTableWidget>
-// #include <QMessageBox>
-// #include<QStringList>
-// #include <QColor>
-
-// void showMem(QTableWidget *t, QString id, QString name, int row);
-
-
-// MemberManage List;
-// Member M;
-// Widget::Widget(QWidget *parent)
-//     : QWidget(parent)
-//     , ui(new Ui::Widget)
-// {
-//     ui->setupUi(this);
-//     this->setWindowTitle("도서 관리 프로그램");
-
-//     /* [반납] */
-//     /* 회원 ID 조회 버튼 */
-//     QPushButton *returnIdButton = ui->checkReturnID;
-//     connect(returnIdButton,SIGNAL(clicked()),this,SLOT(checkExistId()));
-
-//     /* ISBN 조회 버튼 */
-//     QPushButton *returnISBNButton = ui->checkReturnISBN;
-//     connect(returnISBNButton,SIGNAL(clicked()),this,SLOT(checkExistISBN()));
-
-//     /* [회원관리] */
-//     /*  회원 ID 중복 확인 버튼 클릭 */
-//     QPushButton *idAvail = ui->checkAvail;
-//     connect(idAvail,SIGNAL(clicked()),this,SLOT(checkAvail()));
-
-//     /* 회원 등록 버튼 */
-//     QPushButton *regMemBtn = ui->RegMem;
-//     connect(regMemBtn,SIGNAL(clicked()),this,SLOT(regMem()));
-
-//     /* 회원 조회 버튼 */
-//     QPushButton *lookUpMemBtn = ui->lookUpMem;
-//     connect(lookUpMemBtn,SIGNAL(clicked()),this,SLOT(lookUpMem()));
-
-
-// }
-
-
-// /* 반납 탭 */
-// bool Widget::checkExistId() //반납 시 회원 아이디 조회
-// {
-//     QString Id = ui->returnID->toPlainText(); //등록할 ID
-
-//     if(Id.toInt()==0)
-//     {
-//         QMessageBox::information(this,"경고","회원 ID를 입력하세요.",QMessageBox::Ok);
-//         return false;
-//     }
-
-//     Member_maps m = List.memberShow();
-//     for(auto &it:m)
-//     {
-//         if(it.first==Id.toInt())
-//         {
-//             //폰트 변경(초록)
-//             QString name = QString::fromStdString(it.second->getName());
-//             ui->checkReturnName->setText(name);
-//             return true;
-//         }
-//     }
-//     qDebug()<<Id;
-
-//     QMessageBox::information(this,"경고","존재하지 않는 회원 ID 입니다.",QMessageBox::Ok);
-//     ui->returnID->clear();
-//     return false;
-// }
-
-// bool Widget::checkExistISBN() //대출 목록에 ISBN 존재여부 확인
-// {
-//     QString isbn = ui->returnISBN->toPlainText(); //입력한 isbn
-//     QStringList list = M.checkReturnBook(isbn.toInt()); //Member의 checkReturnBook 함수로 대출 목록에서 isbn 검색
-//     if(list[0] == "") //존재하지 않는 경우
-//     {
-//         QMessageBox::information(this,"경고","대출 중인 책이 아닙니다.",QMessageBox::Ok);
-//         ui->returnISBN->clear();
-//         return false;
-//     }
-//     //존재하는 경우
-//     QString title,author,publisher;
-//     title = list[0]; author = list[1]; publisher = list[2];
-//     ui->returnComboTitle->addItem(title);
-//     ui->returnAuthor->setText(author);
-//     ui->returnPublisher->setText(publisher);
-
-//     return true;
-// }
-
-
-// /* 회원 관리 탭 */
-// bool Widget::checkAvail() //회원 등록 시 id 중복여부 체크
-// {
-//     QString RegId = ui->RegMemId->toPlainText(); //등록할 ID
-//      Member_maps m = List.memberShow();
-//     for(auto &it:m)
-//      {
-//          if(it.first==RegId.toInt())
-//         {
-//               QMessageBox::information(this,"경고","이미 존재하는 ID 입니다.",QMessageBox::Ok);
-//              ui->RegMemId->clear();
-//              return false;
-//          }
-//     }
-//     qDebug()<<RegId;
-//     return true;
-// }
-
-// void Widget::regMem() //회원 등록
-// {
-//     QString RegId = ui->RegMemId->toPlainText();
-//     QString name = ui->RegMemName->toPlainText();
-//     qDebug()<<RegId;
-//     qDebug()<<name;
-//     if(RegId.toInt()==0 || name == "") // 둘 중 하나라도 입력 누락되면 메시지 창
-//         QMessageBox::information(this,"입력 누락","ID와 이름 모두 입력해야 합니다.",QMessageBox::Ok);
-//     else
-//     {
-//         if(checkAvail())
-//         {
-//             List.memberRegister(RegId.toInt(), name.toStdString());
-//             qDebug()<<"회원 등록 완료";
-//             ui->RegMemId->clear();
-//             ui->RegMemName->clear();
-//         }
-
-//     }
-
-// }
-
-// void Widget::lookUpMem()  //회원 조회
-// {
-//      QString Id = ui->lookUpMemId->toPlainText();
-//      QString name = ui->lookUpMemName->toPlainText();
-//       QTableWidget *memTableWidget = ui->memTable;
-//      memTableWidget->clear();
-//      QStringList header;
-//       header<<"ID"<<"이름"<<"전화번호";
-//      memTableWidget->setHorizontalHeaderLabels(header);
-
-
-//     /*  전체 조회 */
-//     Member_maps m = List.memberShow(); //멤버 리스트 반환 받음
-//      if(m.size()==0)
-//     {
-//           QMessageBox::information(this,"회원 조회","회원 정보가 없습니다.",QMessageBox::Ok);
-//      }
-//      else{
-//          int row=0;
-//          for(auto &it:m)
-//          {
-//              if(Id.toInt()==0 && name=="") //전체 검색
-//                 showMem(memTableWidget,QString::number(it.first),QString::fromStdString(it.second->getName()),row++);
-//              else if(name=="") //id로 검색
-//              {
-//                  if(Id.toInt()==it.first)
-//                      showMem(memTableWidget,QString::number(it.first),QString::fromStdString(it.second->getName()),row++);
-//              }
-//              else if(Id.toInt() == 0) //이름으로 검색
-//              {
-//                  if(QString::fromStdString(it.second->getName())==name)
-//                      showMem(memTableWidget,QString::number(it.first),QString::fromStdString(it.second->getName()),row++);
-//              }
-//             else //id와 이름 한번에 검색
-//              {
-//                    if(Id.toInt()==it.first&&QString::fromStdString(it.second->getName())==name)
-//                        showMem(memTableWidget,QString::number(it.first),QString::fromStdString(it.second->getName()),row++);
-//             }
-//          }
-//      }
-// }
-
-// void showMem(QTableWidget *t, QString id, QString name, int row) //좌측 회원 표에 출력
-// {
-//     QTableWidgetItem *item;
-//     /* 회원 id 출력 */
-//     item = new QTableWidgetItem;
-//     item->setText(id);
-//     t->setItem(row,0,item);
-
-//     /* 회원 이름 출력 */
-//     item = new QTableWidgetItem;
-//     item->setText(name);
-//     t->setItem(row,1,item);
-//     row++;
-// }
-
-// Widget::~Widget()
-// {
-//     delete ui;
-// }
-
 #include "widget.h"
 #include "./ui_widget.h"
 #include "book.h"
@@ -278,9 +78,10 @@ void Widget::checkID(void) {
     string tmp;
     if (memberMange.checkID(ID.toInt(), tmp)) {
         ui->borrowID->setText(ID);
+        ui->borrowName->setText(QString::fromStdString(tmp));
         // ui->borrowEnableCnt->setText();                                ////////////////// 수정 필요
         QDebug debug = qDebug();
-        debug << "This is a debug message";
+       //debug << "대출";
     }
     else {
         QMessageBox::question(this, "Error", "해당하는 정보의 회원이 없습니다", QMessageBox::Cancel);
@@ -319,7 +120,15 @@ void Widget::borrowBook(void) {
     int id_num = id.toInt();
     string title_str = title.toStdString();
 
-    memberMange.memberBorrowBooks(bookList, id_num, title_str);
+    if(memberMange.memberBorrowBooks(bookList, id_num, title_str)) //대출 성공
+    {
+        QMessageBox::question(this,"information","대출을 완료하였습니다.",QMessageBox::Ok);
+        clearSlot();
+    }
+    else
+    {
+        QMessageBox::question(this,"error","대출에 실패하였습니다.",QMessageBox::Ok);
+    }
 
 
 }
@@ -417,6 +226,7 @@ void Widget::regMem() //회원 등록
         if (checkAvail())
         {
             memberMange.memberRegister(RegId.toInt(), name.toStdString());
+            QMessageBox::information(this,"회원 등록", "회원 등록을 완료하였습니다.",QMessageBox::Ok);
             qDebug() << "회원 등록 완료";
             ui->RegMemId->clear();
             ui->RegMemName->clear();
