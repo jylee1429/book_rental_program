@@ -14,21 +14,21 @@
 ### 기능 소개
 
 **1. 도서 관리📖**
-
-    1-1. 도서 등록
-          <img src="https://github.com/user-attachments/assets/233d5f45-aa00-457b-a451-08aa19f37b1a"/>
-    1-2. 도서 조회
-         <img src="https://github.com/user-attachments/assets/c4a0d7dd-7af9-4ce4-98ec-033bec5e0386"/>
+1-1. 도서 등록
+    <img src="https://github.com/user-attachments/assets/233d5f45-aa00-457b-a451-08aa19f37b1a"/>
+    
+1-2. 도서 조회
+    <img src="https://github.com/user-attachments/assets/c4a0d7dd-7af9-4ce4-98ec-033bec5e0386"/>
 
 **2. 회원 관리👨‍👩‍👧‍👦**
 
-    2-1. 회원 등록
-         <img src="https://github.com/user-attachments/assets/f8b5b6f7-2a26-4026-9f9f-db725ad22e1e"/>
-         id조회 성공
-         <img src="https://github.com/user-attachments/assets/417d78c8-3056-4fd9-95cf-d4157a5e37b8"/>
-         <img src="https://github.com/user-attachments/assets/f9bc5ebc-435a-4c12-bda3-8b584a4ae990"/>
-    2-2. 회원 조회
-         <img src="https://github.com/user-attachments/assets/31d89fc0-d1ed-4d63-9867-ab7a23b34a12"/>
+2-1. 회원 등록
+    <img src="https://github.com/user-attachments/assets/f8b5b6f7-2a26-4026-9f9f-db725ad22e1e"/>
+    id조회 성공
+    <img src="https://github.com/user-attachments/assets/417d78c8-3056-4fd9-95cf-d4157a5e37b8"/>
+    <img src="https://github.com/user-attachments/assets/f9bc5ebc-435a-4c12-bda3-8b584a4ae990"/>
+2-2. 회원 조회
+    <img src="https://github.com/user-attachments/assets/31d89fc0-d1ed-4d63-9867-ab7a23b34a12"/>
 
 **3. 대출📗** 
     <img src="https://github.com/user-attachments/assets/20541533-01a8-4ede-8b71-3961775543f8"/>
