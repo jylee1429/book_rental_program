@@ -26,15 +26,17 @@ class BookManage {
     Book_maps list;
     Book_multi_maps multi_list;
 public:
-    string generateISBN(string& title);                                                                      // ISBN생성
-    void bookRegister(string title, string author, string publisher);                                        // 새로운 책 등록
-    void bookInsert(string& title, string& author, string& publisher, string& isbn);                         // 기존의 책 등록
-    bool searchBookByTitle(vector<Book_ptr>& bookList, string title, int& total_cnt, int& enable_cnt);       // 책 제목을 이용한 검색
-    bool searchBookISBN(string isbn, Book_ptr& book);                                                        // 책 ISBN을 이용한 검색
-    void showBookList(vector<Book_ptr>& bookList) const;                                                     // 전체 책 목록 출력
-    bool borrowBook(string title, Book_ptr& book);                                                           // 책 대여
-    bool returnBook(string& isbn);                                                                           // 책 반납
-    int sizeList(void);                                                                                      // 책 목록 크기 출력
+    string generateISBN(string& title);                                                                                                      // ISBN생성
+    void bookRegister(string title, string author, string publisher);                                                          // 새로운 책 등록
+    void bookInsert(string& title, string& author, string& publisher, string& isbn, bool isBorrow);                                 // 기존의 책 등록
+    bool searchBookByTitle(vector<Book_ptr>& bookList, string title, int& total_cnt, int& enable_cnt);   // 책 제목을 이용한 검색
+    bool searchBookISBN(string isbn, Book_ptr& book);                                                                            // 책 ISBN을 이용한 검색
+    void showBookList(vector<Book_ptr>& bookList) const;                                                                      // 전체 책 목록 출력
+    bool borrowBook(string title, Book_ptr& book);                                                                                   // 책 대여
+    bool returnBook(string& isbn);                                                                                                             // 책 반납
+    int sizeList(void);                                                                                                                                 // 책 목록 크기 출력
+    bool loadBookList(void);                                                                                                                       // 텍스트 파일에서 도서 목록 로드
+    bool storeBookList(void);                                                                                                                      // 텍스트 파일에 도서 목록 저장
 };
 
 class Book {

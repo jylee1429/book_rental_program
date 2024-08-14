@@ -23,8 +23,17 @@ Widget::Widget(QWidget* parent)
     ui->setupUi(this);
     this->setWindowTitle("도서 관리 프로그램");
 
+    /* 종료 버튼 */
+    ui->quit->setStyleSheet("background-color:red;color:white;");
+    connect(ui->quit,SIGNAL(clicked()),this,SLOT(quit()));
+
+    if(!bookManage.loadBookList()){
+        QMessageBox::information(this, "경고", "불러오기 실패.", QMessageBox::Ok);
+    }
+
     initBorrow();
     initBookTable();
+    showAllBook();
 
     /* [대출] */
     ui->borrowAuthor->setStyleSheet("background-color:#F5F5F5;");
@@ -72,6 +81,14 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::quit()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "프로그램 종료", "프로그램을 종료하시겠습니까?",  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        close();
+    }
+}
 
 QString strToqstr(string str){
     return QString::fromStdString(str);

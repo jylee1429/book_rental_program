@@ -25,7 +25,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         book.cpp member.cpp
         book.h member.h
         widget.ui
-
+        book_information.txt
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET manageBook APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
