@@ -41,7 +41,7 @@
     
 <img src="https://github.com/user-attachments/assets/f9bc5ebc-435a-4c12-bda3-8b584a4ae990"/>
 
-ID가 중복되어 사용불가능한 경우로 배경이 빨간색으로 바뀌도록 하였습니다.
+ID가 중복되어 사용불가능한 경우에 배경이 빨간색으로 바뀌도록 하였습니다.
 
 ##### 2-2. 회원 조회
 <img src="https://github.com/user-attachments/assets/31d89fc0-d1ed-4d63-9867-ab7a23b34a12"/>
