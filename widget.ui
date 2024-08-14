@@ -101071,11 +101071,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </column>
    <column>
     <property name="text">
+<<<<<<< HEAD
      <string>ISBN</string>
     </property>
    </column>
    <column>
     <property name="text">
+=======
+>>>>>>> d43fdc0ef039b6e81f4da7e53f3c438c29740d15
      <string>대출가능여부</string>
     </property>
    </column>
@@ -201117,6 +201120,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <row/>
    <column>
     <property name="text">
+<<<<<<< HEAD
+=======
+     <string>ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+>>>>>>> d43fdc0ef039b6e81f4da7e53f3c438c29740d15
      <string>이름</string>
     </property>
    </column>
@@ -201125,6 +201136,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>전화번호</string>
     </property>
    </column>
+<<<<<<< HEAD
    <column>
     <property name="text">
      <string>ID</string>
@@ -201135,6 +201147,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>연체 여부</string>
     </property>
    </column>
+=======
+>>>>>>> d43fdc0ef039b6e81f4da7e53f3c438c29740d15
   </widget>
  </widget>
  <resources/>

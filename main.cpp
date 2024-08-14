@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <windows.h>
 #include <thread>
@@ -189,3 +190,16 @@ void setConsoleColor(int background, int foreground)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), background | foreground);
 }
+=======
+#include "mainwindow.h"
+
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
+>>>>>>> d43fdc0ef039b6e81f4da7e53f3c438c29740d15
