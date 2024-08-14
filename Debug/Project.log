@@ -1,3 +1,0 @@
-﻿  member.cpp
-Debug\book.obj : warning LNK4042: 개체가 두 번 이상 지정되었습니다. 나머지는 무시됩니다.
-  Project.vcxproj -> C:\Users\qldkr\Source\Repos\test\Debug\Project.exe
