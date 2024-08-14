@@ -3,7 +3,7 @@
 ---
 ### 기술 스택
 <img src="https://img.shields.io/badge/Qt-41CD52?style=flat&logo=Qt&logoColor=white"/>
-<img src="httpsL//img.shields.io/badge/c++-00599C?style-flat&logo=C++&logoColor=white"/>
+<img src="https://img.shields.io/badge/c++-00599C?style-flat&logo=C++&logoColor=white"/>
 
 ### 기능 소개
 **1. 도서 관리**
