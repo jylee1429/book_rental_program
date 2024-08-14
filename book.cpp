@@ -1,6 +1,7 @@
 #include "book.h"
 #include <random>
 #include <QDebug>
+#include <filesystem>
 
 // Constructor
 Book::Book(string title, string author, string publisher) {
@@ -80,8 +81,8 @@ void BookManage::bookRegister(string title, string author, string publisher) {
     multi_list.insert({ title, book });
 }
 
-void BookManage::bookInsert(string& title, string& author, string& publisher, string& isbn) {
-    Book_ptr book = make_shared<EachBook>(isbn, false, false);
+void BookManage::bookInsert(string& title, string& author, string& publisher, string& isbn, bool isBorrow) {
+    Book_ptr book = make_shared<EachBook>(isbn, isBorrow, false);
 
     book->setTitle(title);
     book->setAuthor(author);
@@ -145,6 +146,59 @@ bool BookManage::returnBook(string& isbn) {
         return true;
     }
     return false;
+}
+
+bool BookManage::loadBookList(void){
+    string title, author, publisher, isbn, borrowstatus;
+    string line;
+    string filePath = "book_information.txt";
+
+    // ifstream 객체를 사용하여 파일 열기
+    ifstream file(filePath);
+
+    cout<<"현재 작업 디렉토리 : "<<filesystem::current_path()<<endl;
+    // file이 정상적으로 열렸는지 확인
+    if (!file.is_open()) {
+        return false;
+    }
+
+    while (getline(file, line)) {
+        istringstream iss(line);
+
+        if (getline(iss, title, '\t') && getline(iss, author, '\t') && getline(iss, publisher, '\t') && getline(iss, isbn, '\t') && getline(iss, borrowstatus, '\t')) {
+            bool isBorrow;
+            // 대출 가능할 경우
+            if(borrowstatus=="Yes")
+                isBorrow = false;
+            // 대출이 불가능 할 경우
+            else
+                isBorrow = true;
+            this->bookInsert(title, author, publisher, isbn, isBorrow);
+        }
+    }
+
+    file.close();
+}
+
+bool BookManage::storeBookList(void) {
+    string filePath = "book_information.txt";
+    ofstream file(filePath, ios::out);
+
+    if (!file.is_open()) {
+        return false;
+    }
+
+    for (const auto& book : this->list) {
+        string borrowstatus;
+        if(book.second->getIsBorrow())
+            borrowstatus="No";
+        else
+            borrowstatus="Yes";
+
+        file << book.second->getTitle() << '\t' << book.second->getAuthor() << '\t' << book.second->getPublisher() << '\t' << book.second->getISBN() << '\t' << borrowstatus << '\n';
+    }
+
+    file.close();
 }
 
 void EachBook::setISBN(string isbn) {

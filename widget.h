@@ -26,6 +26,7 @@ private:
     Ui::Widget *ui;
 
 public slots:
+    void quit();
     bool checkID(void);
     bool findBookByTitle(void);
     void findBookInfo(int idx);
