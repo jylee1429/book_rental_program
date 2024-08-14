@@ -1,6 +1,9 @@
 # 도서 대여 프로그램
-## 팀원 : 이재영A, 김유진
+ 팀원 : 이재영A, 김유진
 ---
+### 기술 스택
+<img src="https://img.shields.io/badge/Qt-41CD52?style=flat&logo=Qt&logoColor=white"/>
+
 ### 기능 소개
 **1. 도서 관리**
 1-1. 도서 등록
