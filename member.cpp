@@ -1,165 +1,202 @@
 #include <iostream>
 #include <string.h>
 #include <memory>
-
+#include <QDebug>
 using namespace std;
 
 #include "member.h"
 #include "book.h"
 
 
-extern vector<Book> book_list;
 
-/*				MemberListÇÔ¼ö				*/
+/*				MemberListí•¨ìˆ˜				*/
+bool MemberManage::memberRegister(unsigned int id, string name, string callNumber) {
+    if(!checkAvailableID(id)){
+        return false;
+    }
 
+    Member_ptr mem = make_shared<Member>(id, name, callNumber);
+    if (!mem) {
+        return false;
+    }
 
-// È¸¿ø µî·Ï
-void MemberList::memberRegister(void) {
-	int id;
-	string name;
-
-	// È¸¿ø Á¤º¸ ÀÔ·Â
-	inputInfo(id, name);
-	Member_ptr mem = make_shared<Member>(id, 0, 0, name);
-	//¿¹¿Ü Ã³¸®
-
-	list.insert({ id, mem });
+    list.insert({ id, mem });
+    return true;
 }
 
-// È¸¿ø ¸®½ºÆ® Ãâ·Â
-void MemberList::memberShow(void) const {
-	for (const auto& it : list) {
-		cout << "ID: " << it.second->getID() << ", Name: " << it.second->getName() << endl;
-		cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
-		it.second->showBorrowed();
-		cout << endl;
-		//cout << "-----ÇöÀç ¹Ì³³µÈ Ã¥ ¸ñ·Ï-----" << endl;
-		//it.second->showOverdue();
-		//cout << endl;
-	}
+bool MemberManage::checkAvailableID(unsigned int id) {
+    auto it = list.find(id);
+
+    if(it != list.end()){
+        return false;
+    }
+    else{
+        return true;
+    }
 }
 
-// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ¹İ³³
-void MemberList::memberReturnBooks(int id, int isbn) {
-	if (list.find(id) != list.end()) {
-		list[id]->returnBooks(isbn);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
-		return;
-	}
+void MemberManage::memberShow(vector<Member_ptr>& memberList){
+    for (const auto& it : list) {
+        memberList.push_back(it.second);
+    }
 }
 
-// id¿¡ ÇØ´çÇÏ´Â È¸¿ø Ã¥ ´ëÃâ
-void MemberList::memberBorrowBooks(int id, string title) {
-	if (list.find(id) != list.end()) {
-		list[id]->borrowBooks(title);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â È¸¿øÀÌ ¾ø½À´Ï´Ù" << endl;
-		return;
-	}
+bool MemberManage::memberReturnBooks(unsigned int id, string isbn) {
+    auto it = list.find(id);
+    // idì— í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ìˆëŠ”ê²½ìš°
+    if (it != list.end()) {
+        // ë¹Œë¦° ì±… ì¤‘ isbnì— í•´ë‹¹í•˜ëŠ” ì±…ì´ ìˆëŠ” ê²½ìš°
+        if (list[id]->deleteBorrowedList(isbn)) {
+            this->bookManage.returnBook(isbn);
+            list[id]->memberReturnBook();
+            return true;
+        }
+        else
+            return false;
+    }
+    // idì— í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ëŠ” ê²½ìš°
+    else {
+        return false;
+    }
 }
 
-void MemberList::memberBorrowList(Member_maps::iterator& it) {
-	// it.first : id, it.second : member
-	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
-	(*it).second->showBorrowed();
-	cout << endl;
+// idì— í•´ë‹¹í•˜ëŠ” íšŒì› ì±… ëŒ€ì¶œ
+bool MemberManage::memberBorrowBooks(unsigned int id, string isbn) {
+    Book_ptr book;
+    auto it = list.find(id);
+
+    // idì— í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ìˆëŠ”ê²½ìš°
+    if (it != list.end()) {
+        // isbnì— í•´ë‹¹í•˜ëŠ” ì±…ì„ ë¹Œë ¸ì„ ê²½ìš°
+        if (this->bookManage.borrowBook(isbn, book) && list[id]->memberBorrowBook()) {
+            list[id]->insertBorrowedList(isbn, book);
+            return true;
+        }
+        else
+            return false;
+    }
+    // idì— í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ì—†ëŠ” ê²½ìš°
+    else {
+        return false;
+    }
 }
 
-void MemberList::memberOverdueList(Member_maps::iterator& it) {
-	cout << "-----ÇöÀç ºô¸° Ã¥ ¸ñ·Ï-----" << endl;
-	(*it).second->showBorrowed();
-	cout << endl;
+bool MemberManage::getInfoByID(unsigned int id, Member_ptr& member) {
+    auto it = list.find(id);
+
+    // íšŒì›ì´ ì¡´ì¬
+    if (it != list.end()) {
+        member = it->second;
+        return true;
+    }
+    else
+        return false;
 }
 
-
-
-/*				MemberÇÔ¼ö				*/
-
-Member::Member(int id, int  borrowed_cnt, int overdue_cnt, string name) {
-	this->id = id;
-	this->borrowed_cnt = borrowed_cnt;
-	this->overdue_cnt = overdue_cnt;
-	this->name = name;
+bool MemberManage::checkBorrowedBook(unsigned id, string isbn, Book_ptr& book){
+    auto it = list.find(id);
+    // idì— í•´ë‹¹í•˜ëŠ” íšŒì›ì´ ìˆëŠ”ê²½ìš°
+    if (it != list.end()) {
+        // ë¹Œë¦° ì±… ì¤‘ isbnì— í•´ë‹¹í•˜ëŠ” ì±…ì´ ìˆëŠ” ê²½ìš°
+        if (list[id]->searchBorrowBook(isbn, book)) {
+            return true;
+        }
+        else
+            return false;
+    }
+    return false;
 }
 
-// È¸¿ø ÀÌ¸§ Ãâ·Â
+/*				Memberí•¨ìˆ˜				*/
+
+Member::Member(unsigned int id, string name, string callNumber) {
+    this->id = id;
+    this->availableBorrow = INIT_AVAILABLE_BORROW;
+    this->borrowedCnt = 0;
+    this->overdueCnt = 0;
+    this->name = name;
+    this->callNumber = callNumber;
+}
+
 string Member::getName(void) const {
-	return name;
-}
-// È¸¿ø ID Ãâ·Â
-int Member::getID(void) const {
-	return id;
-}
-// ÇöÀç ºô¸° Ã¥ ¼ö Ãâ·Â
-int Member::getBorrowedCnt(void) const {
-	return borrowed_cnt;
-}
-// ¹Ì³³µÈ Ã¥ ¼ö Ãâ·Â
-int Member::getOverdueCnt(void) const {
-	return overdue_cnt;
-}
-// Ã¥ ¹İÈ¯
-void Member::returnBooks(int isbn) {
-
-	//auto it = overduebooks.find(isbn);
-
-	//if (it != overduebooks.end()) {
-	//	book_list.push_back(it->second);
-	//	overduebooks.erase(it);
-	//	cout << "Ã¥ÀÌ ¹İ³³µÇ¾ú½À´Ï´Ù" << endl;
-	//}
-	//else {
-	//	cout << "ÇØ´çÇÏ´Â Ã¥ÀÌ ¾ø½À´Ï´Ù" << endl;
-	//	return;
-	//}
-	auto it = borrowedbooks.find(isbn);
-
-	if (it != borrowedbooks.end()) {
-		(*it).second.returnBook(isbn);
-		borrowedbooks.erase(it);
-	}
-	else {
-		cout << "ÇØ´çÇÏ´Â Ã¥ÀÌ ¾ø½À´Ï´Ù" << endl;
-		return;
-	}
+    return name;
 }
 
-
-// Ã¥ ´ë¿©
-void Member::borrowBooks(string& title) {
-	for (auto it = book_list.begin(); it != book_list.end(); it++) {
-		if (title == it->getTitle()) {
-			auto tmp = it->borrowBook(it->getBookISBN(), title);
-			if (tmp.getTitle() != "-")
-			{
-				borrowedbooks.insert({ it->getBookISBN(),tmp });
-				return;  // ÇÑ ±Ç¸¸ ºô¸®¸é ¹İº¹À» Á¾·á
-			}
-		}
-	}
-	cout << "´ëÃâ °¡´ÉÇÑ Ã¥ÀÌ ¾ø½À´Ï´Ù.\n";
+unsigned int Member::getID(void) const {
+    return id;
 }
 
-void Member::showOverdue(void) const {
-	for (auto& it : overduebooks) {
-		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "ÀúÀÚ : " << it.second.getAuthor() << "ÃâÆÇ»ç : " << it.second.getPublisher() << endl;
-	}
-}
-void Member::showBorrowed(void) const {
-	for (auto it : borrowedbooks) {
-
-		cout << "Ã¥ÀÌ¸§ : " << it.second.getTitle() << "ÀúÀÚ : " << it.second.getAuthor() << "ÃâÆÇ»ç : " << it.second.getPublisher() << endl;
-	}
+string Member::getCallNumber(void) const {
+    return callNumber;
 }
 
+unsigned int Member::getAvailableBorrow(void) const {
+    return availableBorrow;
+}
 
-/*				¿ÜºÎ ÇÔ¼ö				*/
-void inputInfo(int& id, string& name) {
-	cout << "È¸¿ø ID : ";
-	cin >> id;
-	cout << "ÀÌ¸§ : ";
-	cin >> name;
+unsigned int Member::getBorrowedCnt(void) const {
+    return borrowedCnt;
+}
+
+unsigned int Member::getOverdueCnt(void) const {
+    return overdueCnt;
+}
+
+void Member::setID(unsigned int id) {
+    this->id = id;
+}
+
+void Member::setName(string& name) {
+    this->name = name;
+}
+
+void Member::setCallNumber(string& name) {
+    this->callNumber = callNumber;
+}
+
+bool Member::memberBorrowBook(void) {
+    if (availableBorrow < 1) {
+        return false;
+    }
+    availableBorrow--;
+    return true;
+}
+
+bool Member::memberReturnBook(void) {
+    availableBorrow++;
+    if (availableBorrow > INIT_AVAILABLE_BORROW)
+        availableBorrow = INIT_AVAILABLE_BORROW;
+
+    return true;
+}
+
+bool Member::searchBorrowBook(string& isbn, Book_ptr& book) {
+    auto it = this->borrowedbooks.find(isbn);
+
+    // ë¹Œë¦° ì±… ì¤‘ í•´ë‹¹í•˜ëŠ” isbnì´ ì¡´ì¬
+    if (it != this->borrowedbooks.end()) {
+        book = it->second;
+        return true;
+    }
+    else
+        return false;
+}
+
+void Member::insertBorrowedList(string& isbn, Book_ptr& book) {
+    this->borrowedbooks.insert({ isbn,book });
+}
+
+
+
+
+bool Member::deleteBorrowedList(string& isbn) {
+    auto it = this->borrowedbooks.find(isbn);
+
+    // ë¹Œë¦° ì±… ì¤‘ í•´ë‹¹í•˜ëŠ” isbnì´ ì¡´ì¬
+    if (it != this->borrowedbooks.end()) {
+        this->borrowedbooks.erase(it);
+        return true;
+    }
+    else
+        return false;
 }

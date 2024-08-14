@@ -1,170 +1,220 @@
-﻿#include "book.h"
+#include "book.h"
+#include <random>
+#include <QDebug>
 
-Book::Book() {
-	this->title = "-";
-	this->author = "";
-	this->publisher = "";
+// Constructor
+Book::Book(string title, string author, string publisher) {
+    this->title = title;
+    this->author = author;
+    this->publisher = publisher;
 }
 
-string Book::getTitle() const
-{
-	return this->title;
-}
-
-string Book::getAuthor() const
-{
-	return this->author;
-}
-
-string Book::getPublisher() const
-{
-	return this->publisher;
-}
-int Book::getBookISBN() const
-{
-	if (each.size() == 0)
-		return -1;				// 재고 없음
-
-	return each[each.size() - 1].getISBN();	// ISBN 출력
-}
-
-void Book::addBook(int isbn, const string& title, const string& author, const string& publisher) { //책 등록
-	this->title = title;
-	this->author = author;
-	this->publisher = publisher;
-	this->each.push_back(EachBook(isbn));
-}
-
-void Book::searchBook() const //책 검색
-{
-	cout << "책 제목 : " << this->getTitle() << endl;
-	cout << "책 저자 : " << this->getAuthor() << endl;
-	cout << "출판사 : " << this->getPublisher() << endl;
-}
-
-Book Book::borrowBook(int isbn, const string& t) //책 대출
-{
-	try {
-		for (auto& it : this->each)
-		{
-			if (it.getISBN() == isbn)
-			{
-				if (it.available())
-				{
-					cout << "ISBN: " << isbn << " 책을 대출합니다.\n";
-
-					it.borrow(isbn);
-					return *this;
-				}
-			}
-		}
-		Book b;
-		return b;
-	}
-	catch (exception& e) {
-		cout << "대출 불가\n";
-	}
-}
-
-void Book::returnBook(int isbn) //책 반납
-{
-	for (auto& it : this->each)
-		if (it.getISBN() == isbn)
-		{
-			it.return_book();
-		}
-
-	cout << "반납을 완료하였습니다.\n";
+EachBook::EachBook(string isbn, bool isBorrow, bool isOverdue) {
+    this->ISBN = isbn;
+    this->isBorrow = isBorrow;
+    this->isOverdue = isOverdue;
+    this->author = "";
+    this->publisher = "";
+    this->title = "";
 }
 
 
-EachBook::EachBook() :EachBook(0) {}
-EachBook::EachBook(int ISBN)
-{
-	this->ISBN = ISBN;
-	this->borrow_status = false;
+string BookManage::generateISBN(string& title) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dis(0, 9999);
+
+    vector<string> v_str = { "가","나","다","라","마","바","사","아","자","차","카","타","파","하" };
+    vector<char> c_str={'A','B','C','D','E','F','G','H','I','J','K','L','M','N'};
+
+    string initISBN;
+    string initial_str = title.substr(0,2);
+    char initial = title[0];
+
+    if (title.empty())
+        return "unknown";
+
+    if (initial_str[0] & 0x80) {
+        int cnt = 0;
+        for (auto it = v_str.begin(); it != v_str.end(); it++) {
+            if (initial_str < *it) {;
+                break;
+            }
+            cnt++;
+        }
+        initISBN=c_str[cnt];
+    }
+    else if ((initial >= 'A' && initial <= 'Z') || (initial >= 'a' && initial <= 'z')) {
+        char ch = toupper(initial);
+        initISBN = string(2, ch);
+    }
+
+    else {
+        initISBN = "Z";
+    }
+
+    while(true) {
+        int num = dis(gen);
+        string isbn = initISBN + to_string(num);
+
+        auto it = list.find(isbn);
+        if (it == list.end()) {
+            return isbn;
+        }
+    }
 }
 
-void EachBook::setISBN(int isbn)
-{
-	this->ISBN = isbn;
-}
-int EachBook::getISBN() const
-{
-	return ISBN;
-}
-bool EachBook::available()
-{
-	cout << "현상태 borrow_status = " << borrow_status << endl;
-	return !borrow_status;
+int BookManage::sizeList(void) {
+    return this->list.size();
 }
 
-void EachBook::borrow(int ISBN)
-{
-	this->borrow_status = true;
-	cout << "대출 후 borrow_status = " << borrow_status << endl;
+void BookManage::bookRegister(string title, string author, string publisher) {
+    string isbn = this->generateISBN(title);
+    Book_ptr book = make_shared<EachBook>(isbn, false, false);
 
+    book->setTitle(title);
+    book->setAuthor(author);
+    book->setPublisher(publisher);
+
+    list.insert({ isbn,book });
+    multi_list.insert({ title, book });
 }
 
-void EachBook::return_book() {
-	this->borrow_status = false;
-	cout << "반납 후 borrow_status = " << borrow_status << endl;
+void BookManage::bookInsert(string& title, string& author, string& publisher, string& isbn) {
+    Book_ptr book = make_shared<EachBook>(isbn, false, false);
+
+    book->setTitle(title);
+    book->setAuthor(author);
+    book->setPublisher(publisher);
+
+    list.insert({ isbn,book });
+    multi_list.insert({ title, book });
 }
 
+bool BookManage::searchBookByTitle(vector<Book_ptr>& bookList, string title, int& total_cnt, int& enable_cnt) {
+    total_cnt = 0;
+    enable_cnt = 0;
 
-string EachBook::getTitle() const
-{
-	//return this->title;
-	return Book::getTitle();
+    auto range = multi_list.equal_range(title);
+    if (range.first == range.second)
+        return false;
+    for (auto it = range.first; it != range.second; it++) {
+        total_cnt++;
+        if (!it->second->getIsBorrow())
+            enable_cnt++;
+        bookList.push_back(it->second);
+    }
+    return true;
 }
 
-void EachBook::setTitle(string t)
-{
-	this->title = t;
+bool BookManage::searchBookISBN(string isbn, Book_ptr& book) {
+    auto it = list.find(isbn);
+
+    if (it != list.end()) {
+        book = it->second;
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
-// 책 목록 읽기
-void loadBook(vector<Book>& vBook) {
-	string title, author, publisher;
-	string line;
-	int isbn = 1;
-
-	ifstream file("book_information.txt");
-	// file이 정상적으로 열렸는지 확인 
-	if (!file.is_open()) {
-		cout << "파일을 열 수 없습니다." << endl;
-		exit(1);
-	}
-
-	while (getline(file, line)) {
-		istringstream iss(line);
-
-		Book temp;
-		if (getline(iss, title, '\t') &&
-			getline(iss, author, '\t') &&
-			getline(iss, publisher, '\t')) {
-
-			temp.addBook(isbn++, title, author, publisher);
-			vBook.push_back(temp);
-		}
-	}
-
-	file.close();
-
+void BookManage::showBookList(vector<Book_ptr>& bookList) const {
+    for (auto it = this->list.begin(); it != this->list.end(); it++) {
+        bookList.push_back({ it->second });
+    }
 }
 
-// 책 목록 쓰기
-void storeBook(const vector<Book>& vBook) {
-	ofstream file("book_information.txt", ios::out);
+bool BookManage::borrowBook(string isbn, Book_ptr& book) {
+    if(searchBookISBN(isbn, book) && !book->getIsBorrow()){
+        book->setIsBorrow(true);
+        return true;
+    }
+    else{
+        return false;
+    }
 
-	if (!file.is_open()) {
-		cout << "파일을 열 수 없습니다." << endl;
-		exit(1);
-	}
-
-	for (const auto& book : vBook) {
-		file << book.getTitle() << '\t' << book.getAuthor() << '\t' << book.getPublisher() << '\n';
-	}
-
-	file.close();
+    return false;
 }
+
+bool BookManage::returnBook(string& isbn) {
+    Book_ptr book;
+
+    if (this->searchBookISBN(isbn, book) && book->getIsBorrow()) {
+        book->setIsBorrow(false);
+        return true;
+    }
+    return false;
+}
+
+void EachBook::setISBN(string isbn) {
+    this->ISBN = isbn;
+}
+
+string EachBook::getISBN(void) const {
+    return ISBN;
+}
+
+void EachBook::setTitle(string title) {
+    this->title = title;
+}
+
+string EachBook::getTitle(void) const {
+    return title;
+}
+
+void EachBook::setAuthor(string author) {
+    this->author = author;
+}
+
+string EachBook::getAuthor(void) const {
+    return author;
+}
+
+void EachBook::setPublisher(string publisher) {
+    this->publisher = publisher;
+}
+
+string EachBook::getPublisher(void) const {
+    return publisher;
+}
+
+bool EachBook::getIsBorrow(void) const {
+    return isBorrow;
+}
+
+void EachBook::setIsBorrow(bool isBorrow) {
+    this->isBorrow = isBorrow;
+}
+
+void EachBook::setIsOverdue(bool isOverdue) {
+    this->isOverdue = isOverdue;
+}
+bool EachBook::getIsOverdue(void) const {
+    return isOverdue;
+}
+
+Date::Date(unsigned char year, unsigned char month, unsigned char day) {
+    this->year = year;
+    this->month = month;
+    this->day = day;
+}
+
+void Date::setDate(unsigned char year, unsigned char month, unsigned char day) {
+    this->year = year;
+    this->month = month;
+    this->day = day;
+}
+
+unsigned char Date::getYear(void) {
+    return this->year;
+}
+
+unsigned char Date::getMonth(void) {
+    return this->month;
+}
+
+unsigned char Date::getDay(void) {
+    return this->day;
+}
+

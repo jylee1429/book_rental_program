@@ -6,44 +6,58 @@ using namespace std;
 
 #include "book.h"
 
+#define INIT_AVAILABLE_BORROW 10
+
 class Member;
 
 typedef shared_ptr<Member> Member_ptr;
-typedef map<int, shared_ptr<Member>> Member_maps;
+typedef map<unsigned int, shared_ptr<Member>> Member_maps;
 
 
-class MemberList {
-	Member_maps list;		// 회원 정보 리스트 : <id, Member>
+class MemberManage {
+    Member_maps list;
+    BookManage& bookManage;
 public:
-	void memberRegister(void);
-	void memberShow(void) const;
-	void memberBorrowList(Member_maps::iterator& it);
-	void memberOverdueList(Member_maps::iterator& it);
-	void memberReturnBooks(int id, int isbn);
-	void memberBorrowBooks(int id, string title);
+    MemberManage(BookManage& bookmanage) : bookManage(bookmanage) {}
+    bool memberRegister(unsigned int id, string name, string callNumber);
+    bool checkAvailableID(unsigned int id);
+    void memberShow(vector<Member_ptr>& memberList);
+    bool memberReturnBooks(unsigned int id, string isbn);
+    bool memberBorrowBooks(unsigned int id, string isbn);
+    bool getInfoByID(unsigned int id, Member_ptr& member);
+    bool checkBorrowedBook(unsigned id, string isbn, Book_ptr& book);
 };
 
 class Member {
-	int id;				//	id
-	int borrowed_cnt;	//	현재 빌린 책 수
-	int overdue_cnt;	//  반납이 안된 책 수
-	map<int, Book> overduebooks;	// 미반납된 책 리스트 : <ISBN, Book>
-	map<int, Book> borrowedbooks;	// 빌린 책 리스트 : <ISBN, Book>
-	string name;		//  이름
+    unsigned int id;
+    unsigned int availableBorrow;
+    unsigned int borrowedCnt;
+    unsigned int overdueCnt;
+    Book_maps overduebooks;
+    Book_maps borrowedbooks;
+    string name;
+    string callNumber;
 public:
-	Member(int id = 0, int  borrowed_cnt = 0, int overdue_cnt = 0, string name = " ");
-	string getName(void) const;
-	int getID(void) const;
-	int getBorrowedCnt(void) const;
-	int getOverdueCnt(void) const;
-	void returnBooks(int isbn);
-	void borrowBooks(string& title);
-	void showOverdue(void) const;
-	void showBorrowed(void) const;
+    Member(unsigned int id = 0, string name = "", string callNumber = "");
+    void setName(string& name);
+    string getName(void) const;
+    void setID(unsigned int id);
+    unsigned int getID(void) const;
+    void setCallNumber(string& callNumber);
+    string getCallNumber(void) const;
+    unsigned int getAvailableBorrow(void) const;
+    unsigned int getBorrowedCnt(void) const;
+    unsigned int getOverdueCnt(void) const;																														//
+    bool searchBorrowBook(string& isbn, Book_ptr& book);
+    void insertBorrowedList(string& isbn, Book_ptr& book);
+    bool deleteBorrowedList(string& isbn);
+    Book_maps returnBorrowBooks(void);
+    Book_maps returnOverdueBooks(void);
+    bool memberBorrowBook(void);
+    bool memberReturnBook(void);
 };
 
 
-void inputInfo(int& id, string& name);
 
 #endif
 
