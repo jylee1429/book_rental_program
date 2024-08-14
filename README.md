@@ -4,7 +4,7 @@
 ### 기술 스택
 <img height="50" src="https://img.shields.io/badge/c++-00599C?style-flat&logo=C++&logoColor=white"/> <img height="50" src="https://img.shields.io/badge/Qt-41CD52?style=flat&logo=Qt&logoColor=white"/> 
 
-
+<img src="https://github.com/user-attachments/assets/8527811e-2cde-43a7-8f7b-b3a7cea96f15"/>
 ### 기능 소개
 **1. 도서 관리📖**
 
